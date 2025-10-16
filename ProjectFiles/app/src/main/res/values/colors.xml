@@ -11,8 +11,8 @@
     <color name="light_blue_200">#FF81D4FA</color>
     <color name="light_blue_600">#FF039BE5</color>
     <color name="light_blue_900">#FF01579B</color>
-    <color name="button_interactable">#FF01579B</color>
-    <color name="button_text_interactable">#B2BEB5</color>
-    <color name="button_disabled">#B2BEB5</color>
-    <color name="button_text_disabled">#FF01579B</color>
+    <color name="button_interactable">#FFFFFFFF</color>
+    <color name="button_text_interactable">#FF000000</color>
+    <color name="button_disabled">#FF000000</color>
+    <color name="button_text_disabled">#FFFFFFFF</color>
 </resources>

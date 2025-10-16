@@ -10,19 +10,24 @@ import android.os.SystemClock
 import android.util.Log
 import android.widget.RemoteViews
 import androidx.annotation.RequiresPermission
+import androidx.core.content.ContextCompat
 
 class MainButtonHandler(private val context: Context) {
+
+    private val prefs = PrefsManager(context)
 
     fun onMainButtonClicked() {
         Log.d("Button handler", "onMainButtonClicked")
         toast("MainButtonHandler triggered!")
 
+        if(prefs.isTimerActive())
+        {
+            // Display 'not clickable'
+            toast("Not yet clickable.")
+            return;
+        }
 
-        val manager = AppWidgetManager.getInstance(context)
-        val component = ComponentName(context, MainWidget::class.java)
-        val views = RemoteViews(context.packageName, R.layout.main_widget)
-        views.setTextViewText(R.id.main_button, "Clicked!")
-        manager.updateAppWidget(component, views)
+        setIsInteractable(isInteractable = false)
         Log.d("Button handler", "Done.")
 
         try {
@@ -31,18 +36,40 @@ class MainButtonHandler(private val context: Context) {
         catch (e: SecurityException)
         {
             Log.d("Error", e.message.toString())
-        }    }
+            toast("Can't create timer. Ensure permission is given.")
+        }
+    }
 
     /**
      * Resets the text on the button and makes it interactable again.
      */
     fun resumeButtonInteractive() {
-        toast("Timer was triggered!")
+        toast("Button can be clicked on again!")
+        prefs.setTimerActive(active = false)
 
+        setIsInteractable(isInteractable = true)
     }
 
     fun refresh() {
+        val timerActive = prefs.isTimerActive()
+        setIsInteractable(isInteractable = !timerActive)
+    }
 
+    private fun setIsInteractable(isInteractable: Boolean)
+    {
+        val views = RemoteViews(context.packageName, R.layout.main_widget)
+        val manager = AppWidgetManager.getInstance(context)
+        val component = ComponentName(context, MainWidget::class.java)
+
+        val buttonColor = if (isInteractable)  ContextCompat.getColor(context, R.color.button_interactable) else ContextCompat.getColor(context, R.color.button_disabled)
+        val textColor = if (isInteractable)  ContextCompat.getColor(context, R.color.button_text_interactable) else ContextCompat.getColor(context, R.color.button_text_disabled)
+        val buttonText = if (isInteractable) "Click" else "Waiting..."
+
+        views.setTextColor(R.id.main_button, textColor)
+        views.setInt(R.id.main_button, "setBackgroundColor", buttonColor)
+        views.setTextViewText(R.id.main_button, buttonText)
+
+        manager.updateAppWidget(component, views)
     }
 
     @RequiresPermission(value = "android.permission.SCHEDULE_EXACT_ALARM", conditional = true)
@@ -67,17 +94,14 @@ class MainButtonHandler(private val context: Context) {
                 SystemClock.elapsedRealtime() + 5000,
                 pendingIntent
             )
-//        alarmManager.setExactAndAllowWhileIdle(
-//            AlarmManager.ELAPSED_REALTIME_WAKEUP,
-//            triggerTime,
-//            pendingIntent
-//        )
+            prefs.setTimerActive(active = true)
+            toast("Button is clickable in $triggerTime seconds.")
         }
         catch (e: SecurityException)
         {
             Log.d("Error", e.message.toString())
+            toast("Can't create timer. Ensure permission is given.")
         }
-        toast("Alarm set!")
     }
 
     private fun toast(message: String)
