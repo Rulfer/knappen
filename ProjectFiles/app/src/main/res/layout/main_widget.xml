@@ -7,6 +7,7 @@
     android:backgroundTint="#00FFFFFF"
     android:theme="@style/Theme.Knappen.AppWidgetContainer"
     android:visibility="visible"
+    android:padding="5dp"
     tools:visibility="visible">
 
     <TextView
@@ -35,6 +36,15 @@
         style="@android:style/Widget.DeviceDefault.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test" />
+        android:text="Knappen" />
+
+    <Button
+        android:id="@+id/test_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/main_button"
+        android:rotationX="0"
+        android:text="Button"
+        android:translationX="0dp" />
 
 </RelativeLayout>

@@ -45,7 +45,6 @@ class MainWidget : AppWidgetProvider() {
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        Log.i("Main", "Test")
         if (intent.action == ACTION_BUTTON_CLICK) {
             // 👉 Delegate to your handler
             val handler = MainButtonHandler(context)

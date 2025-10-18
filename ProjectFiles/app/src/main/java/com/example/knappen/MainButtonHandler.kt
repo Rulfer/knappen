@@ -19,7 +19,7 @@ class MainButtonHandler(private val context: Context) {
     private val prefs = PrefsManager(context)
 
     fun onMainButtonClicked() {
-        Log.d("Button handler", "onMainButtonClicked")
+        Log.d("Knappen", "onMainButtonClicked")
 
         if(prefs.isTimerActive() && timeUntilTrigger() > 0)
         {
@@ -170,6 +170,7 @@ class MainButtonHandler(private val context: Context) {
         }
 
         prefs.setTriggerTime(triggerTime)
+        prefs.setTimerActive(active = true)
         val timeUntilTrigger = timeUntilTrigger()
         toast("Knappen is enabled in $timeUntilTrigger hours.")
     }
