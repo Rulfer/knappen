@@ -11,8 +11,8 @@ android {
     }
 
     defaultConfig {
-        applicationId = rootProject.extra["defaultApplicationId"] as String
-//        applicationId = "com.bardsplayground.knappen"
+//        applicationId = rootProject.extra["defaultApplicationId"] as String
+        applicationId = "com.bardsplayground.knappen"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -23,13 +23,19 @@ android {
 
     buildTypes {
         release {
+            // Enables code-related app optimization.
             isMinifyEnabled = true
+
+            // Enables resource shrinking.
+            isMinifyEnabled = true
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
 //            applicationIdSuffix = rootProject.extra["defaultApplicationId"] as String
             isDebuggable = false
+
         }
     }
     compileOptions {

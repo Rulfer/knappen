@@ -11,6 +11,7 @@ import android.util.Log
 import android.widget.RemoteViews
 import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
+import kotlin.math.ceil
 
 class MainButtonHandler(private val context: Context) {
 
@@ -22,26 +23,10 @@ class MainButtonHandler(private val context: Context) {
         if(prefs.isTimerActive() && timeUntilTrigger() > 0)
         {
             // Display 'not clickable' with extra fail safe
-            val triggersInXHours = timeUntilTrigger()
-            val systemCurrentTime = System.currentTimeMillis()
-            val prefsTime = prefs.getTriggerTime()
-            Log.d("MainButtonHandler", "1 - Triggers in $triggersInXHours")
-            Log.d("MainButtonHandler", "1 - System.currentTimeMillis() is $systemCurrentTime")
-            Log.d("MainButtonHandler", "1 - prefs.getTriggerTime() is $prefsTime")
-
-            toast("Knappen is clickable in $triggersInXHours hours.")
+            toast("Knappen is clickable in ${timeUntilTriggerString()}.")
             setIsInteractable(false)
             return;
         }
-
-        val isTriggerActive = prefs.isTimerActive()
-        val triggersInXHours = timeUntilTrigger()
-        val systemCurrentTime = System.currentTimeMillis()
-        val prefsTime = prefs.getTriggerTime()
-        Log.d("MainButtonHandler", "2 - prefs.isTimerActive() is $isTriggerActive")
-        Log.d("MainButtonHandler", "2 - Triggers in $triggersInXHours")
-        Log.d("MainButtonHandler", "2 - System.currentTimeMillis() is $systemCurrentTime")
-        Log.d("MainButtonHandler", "2 - prefs.getTriggerTime() is $prefsTime")
 
         setIsInteractable(isInteractable = false)
         Log.d("Button handler", "Done.")
@@ -56,7 +41,22 @@ class MainButtonHandler(private val context: Context) {
 
     fun timeUntilTrigger(): Long{
 
-        return (prefs.getTriggerTime() - System.currentTimeMillis()) / (longHours())
+//        return (prefs.getTriggerTime() - System.currentTimeMillis()) / (longHours())
+        val diff = prefs.getTriggerTime() - System.currentTimeMillis()
+        return ceil(diff.toDouble() / longHours().toDouble()).toLong()
+    }
+
+    fun timeUntilTriggerString(): String {
+//        return "Hei"
+        val diff = prefs.getTriggerTime() - System.currentTimeMillis()
+        if (diff <= 0) return "now"
+
+        val hours = diff / longHours()
+        val minutes = (diff % longHours()) / (1000 * 60)
+        return if (hours > 0)
+            "${hours}h ${minutes}m"
+        else
+            "${minutes}m"
     }
 
     /**
@@ -169,8 +169,7 @@ class MainButtonHandler(private val context: Context) {
 
         prefs.setTriggerTime(triggerTime)
         prefs.setTimerActive(active = true)
-        val timeUntilTrigger = timeUntilTrigger()
-        toast("Knappen is enabled in $timeUntilTrigger hours.")
+        toast("Knappen is clickable in ${timeUntilTriggerString()}.")
     }
 
     private fun toast(message: String)

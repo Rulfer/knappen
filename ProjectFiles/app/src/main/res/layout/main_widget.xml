@@ -50,3 +50,29 @@
         android:translationX="0dp" />
 
 </RelativeLayout>
+
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:padding="5dp">-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/appwidget_text"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Test" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/main_button"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Knappen" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/test_button"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_toRightOf="@id/main_button"-->
+<!--            android:text="Button"/>-->
+
+<!--</RelativeLayout>-->
