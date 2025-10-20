@@ -1,11 +1,10 @@
-package com.example.knappen
+package com.bardsplayground.knappen
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.RemoteViews
 
 /**
@@ -14,7 +13,7 @@ import android.widget.RemoteViews
  */
 class MainWidget : AppWidgetProvider() {
     companion object {
-        private const val ACTION_BUTTON_CLICK = "com.example.knappen.BUTTON_CLICKED"
+        private const val ACTION_BUTTON_CLICK = "com.bardsplayground.knappen.BUTTON_CLICKED"
     }
 
     override fun onUpdate(
@@ -65,7 +64,7 @@ internal fun updateAppWidget(
 
     // Create an intent to broadcast when the button is clicked
     val intent = Intent(context, MainWidget::class.java).apply {
-        action = "com.example.knappen.BUTTON_CLICKED"
+        action = "com.bardsplayground.knappen.BUTTON_CLICKED"
         putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
     }
 

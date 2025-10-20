@@ -1,4 +1,4 @@
-package com.example.knappen
+package com.bardsplayground.knappen
 
 import android.app.Activity
 import android.os.Bundle

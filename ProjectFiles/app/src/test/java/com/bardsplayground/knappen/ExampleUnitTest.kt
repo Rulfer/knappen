@@ -1,4 +1,4 @@
-package com.example.knappen
+package com.bardsplayground.knappen
 
 import org.junit.Test
 

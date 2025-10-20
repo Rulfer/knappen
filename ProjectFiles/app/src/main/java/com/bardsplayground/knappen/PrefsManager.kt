@@ -1,4 +1,4 @@
-package com.example.knappen
+package com.bardsplayground.knappen
 
 import android.content.Context
 import android.content.SharedPreferences

@@ -1,4 +1,4 @@
-package com.example.knappen.ui.theme
+package com.bardsplayground.knappen.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

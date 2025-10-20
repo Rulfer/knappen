@@ -36,6 +36,7 @@
         style="@android:style/Widget.DeviceDefault.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="true"
         android:text="Knappen" />
 
     <Button
@@ -43,6 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/main_button"
+        android:enabled="false"
         android:rotationX="0"
         android:text="Button"
         android:translationX="0dp" />

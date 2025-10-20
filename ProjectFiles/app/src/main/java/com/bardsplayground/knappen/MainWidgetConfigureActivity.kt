@@ -1,4 +1,4 @@
-package com.example.knappen
+package com.bardsplayground.knappen
 
 import android.app.Activity
 import android.appwidget.AppWidgetManager
@@ -7,7 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
-import com.example.knappen.databinding.MainWidgetConfigureBinding
+import com.bardsplayground.knappen.databinding.MainWidgetConfigureBinding
 
 /**
  * The configuration screen for the [MainWidget] AppWidget.
@@ -67,7 +67,7 @@ class MainWidgetConfigureActivity : Activity() {
 
 }
 
-private const val PREFS_NAME = "com.example.knappen.MainWidget"
+private const val PREFS_NAME = "com.bardsplayground.knappen.MainWidget"
 private const val PREF_PREFIX_KEY = "appwidget_"
 
 // Write the prefix to the SharedPreferences object for this widget

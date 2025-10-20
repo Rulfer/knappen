@@ -1,4 +1,4 @@
-package com.example.knappen
+package com.bardsplayground.knappen
 
 import android.content.BroadcastReceiver
 import android.content.Context
