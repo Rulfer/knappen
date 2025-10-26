@@ -13,6 +13,7 @@ In no particular order - TODO:
 12. Finalize 'we need this permission' view / graphics
 13. Add 'options' button on the widget
 14. Read/Write all options from player prefs
+15. Add localization (first for Norwegian and English Simplified)
 
 Currently working on:
 7
