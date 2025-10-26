@@ -1,10 +1,12 @@
 package com.bardsplayground.knappen
 
+import android.app.Activity
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.RemoteViews
 
 /**
@@ -13,8 +15,13 @@ import android.widget.RemoteViews
  */
 class MainWidget : AppWidgetProvider() {
     companion object {
-        private const val ACTION_BUTTON_CLICK = "com.bardsplayground.knappen.BUTTON_CLICKED"
+        const val ACTION_BUTTON_CLICK = "com.bardsplayground.knappen.BUTTON_CLICKED"
+        const val ACTION_OPEN_SETTINGS = "com.bardsplayground.knappen.OPEN_SETTINGS"
+        const val ACTION_REQUEST_PERMISSION = "com.bardsplayground.knappen.REQUEST_PERMISSION"
+
     }
+
+//    var context: Context? = null
 
     override fun onUpdate(
         context: Context,
@@ -36,6 +43,8 @@ class MainWidget : AppWidgetProvider() {
 
     override fun onEnabled(context: Context) {
         // Enter relevant functionality for when the first widget is created
+//        this.context = context
+
     }
 
     override fun onDisabled(context: Context) {
@@ -57,16 +66,20 @@ internal fun updateAppWidget(
     appWidgetManager: AppWidgetManager,
     appWidgetId: Int
 ) {
+
 //    val widgetText = loadTitlePref(context, appWidgetId)
     // Construct the RemoteViews object
     val views = RemoteViews(context.packageName, R.layout.main_widget)
+    val requestPermissionView = RemoteViews(context.packageName, R.layout.activity_permission)
 //    views.setTextViewText(R.id.appwidget_text, widgetText)
 
     // Create an intent to broadcast when the button is clicked
     val intent = Intent(context, MainWidget::class.java).apply {
-        action = "com.bardsplayground.knappen.BUTTON_CLICKED"
+        action = MainWidget.ACTION_BUTTON_CLICK
         putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
     }
+
+
 
     val pendingIntent = PendingIntent.getBroadcast(
         context,

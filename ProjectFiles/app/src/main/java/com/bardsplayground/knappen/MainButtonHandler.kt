@@ -16,6 +16,7 @@ import kotlin.math.ceil
 class MainButtonHandler(private val context: Context) {
 
     private val prefs = PrefsManager(context)
+    private val notificationHandler = NotificationHandler(context)
 
     fun onMainButtonClicked() {
         Log.d("Knappen", "onMainButtonClicked")
@@ -23,7 +24,8 @@ class MainButtonHandler(private val context: Context) {
         if(prefs.isTimerActive() && timeUntilTrigger() > 0)
         {
             // Display 'not clickable' with extra fail safe
-            toast("Knappen is clickable in ${timeUntilTriggerString()}.")
+//            toast("Knappen is clickable in ${timeUntilTriggerString()}.")
+
             setIsInteractable(false)
             return;
         }
@@ -41,13 +43,11 @@ class MainButtonHandler(private val context: Context) {
 
     fun timeUntilTrigger(): Long{
 
-//        return (prefs.getTriggerTime() - System.currentTimeMillis()) / (longHours())
         val diff = prefs.getTriggerTime() - System.currentTimeMillis()
         return ceil(diff.toDouble() / longHours().toDouble()).toLong()
     }
 
     fun timeUntilTriggerString(): String {
-//        return "Hei"
         val diff = prefs.getTriggerTime() - System.currentTimeMillis()
         if (diff <= 0) return "now"
 
@@ -63,7 +63,8 @@ class MainButtonHandler(private val context: Context) {
      * Resets the text on the button and makes it interactable again.
      */
     fun resumeButtonInteractive() {
-        toast("Button can be clicked on again!")
+//        toast("Button can be clicked on again!")
+        setButtonText("Knappen")
         prefs.setTimerActive(active = false)
 
         setIsInteractable(isInteractable = true)
@@ -84,7 +85,7 @@ class MainButtonHandler(private val context: Context) {
         val defaultValue: Long = -1
         if(wasTimerActive && triggerTimerAt == defaultValue) {
             // Shit. We were unable to check when the timer was expected to trigger.
-            toast("Knappen failed to verify when it should become active again.")
+//            toast("Knappen failed to verify when it should become active again.")
             return;
         }
         if(!wasTimerActive){
@@ -101,8 +102,6 @@ class MainButtonHandler(private val context: Context) {
             prefs.setTimerActive(false) // Reset values
     }
 
-
-
     private fun setIsInteractable(isInteractable: Boolean)
     {
         val views = RemoteViews(context.packageName, R.layout.main_widget)
@@ -111,7 +110,8 @@ class MainButtonHandler(private val context: Context) {
 
         val buttonColor = if (isInteractable)  ContextCompat.getColor(context, R.color.button_interactable) else ContextCompat.getColor(context, R.color.button_disabled)
         val textColor = if (isInteractable)  ContextCompat.getColor(context, R.color.button_text_interactable) else ContextCompat.getColor(context, R.color.button_text_disabled)
-        val buttonText = if (isInteractable) "Click" else "Waiting..."
+        val buttonText = if (isInteractable) "Knappen" else timeUntilTriggerString()
+
 
         views.setTextColor(R.id.main_button, textColor)
         views.setInt(R.id.main_button, "setBackgroundColor", buttonColor)
@@ -128,7 +128,7 @@ class MainButtonHandler(private val context: Context) {
         catch (e: SecurityException)
         {
             Log.d("Error", e.message.toString())
-            toast("Can't create timer. Ensure permission is given.")
+//            toast("Can't create timer. Ensure permission is given.")
         }
     }
 
@@ -169,7 +169,14 @@ class MainButtonHandler(private val context: Context) {
 
         prefs.setTriggerTime(triggerTime)
         prefs.setTimerActive(active = true)
-        toast("Knappen is clickable in ${timeUntilTriggerString()}.")
+
+        notificationHandler.createNotification("Button is clicked on!")
+//        toast("Knappen is clickable in ${timeUntilTriggerString()}.")
+    }
+
+    private fun setButtonText(message: String) {
+        val views = RemoteViews(context.packageName, R.layout.main_widget)
+        views.setTextViewText(R.id.main_button, message)
     }
 
     private fun toast(message: String)

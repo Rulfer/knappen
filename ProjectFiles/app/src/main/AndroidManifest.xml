@@ -19,6 +19,8 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.bardsplayground.knappen.BUTTON_CLICKED" /> <!-- add this -->
+                <action android:name="com.bardsplayground.knappen.OPEN_SETTINGS" /> <!-- add this -->
+                <action android:name="com.bardsplayground.knappen.REQUEST_PERMISSION" /> <!-- add this -->
             </intent-filter>
 
             <meta-data
@@ -40,6 +42,11 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".PermissionActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Knappen.Dialog">
         </activity>
         <activity
             android:name=".ToastActivity"
