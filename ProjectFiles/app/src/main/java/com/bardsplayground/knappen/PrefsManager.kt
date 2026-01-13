@@ -10,6 +10,10 @@ class PrefsManager (context: Context) {
     private val KEY_TIMER_TRIGGER = "timer_trigger"
     private val KEY_TIMER_DURATION = "timer_duration"
 
+    val SECOND =1000L
+    val MINUTE =60 * SECOND
+    val HOUR =60 * MINUTE
+
     /**
      * Store the current 'is timer active' state. It will also remove the 'trigger at' value when 'active' is false, and call setTriggerTime to -1L.
      */
@@ -42,7 +46,7 @@ class PrefsManager (context: Context) {
      * Default value is 4 hours.
      */
     fun getTimerDuration(): Long{
-//        return prefs.getLong(KEY_TIMER_DURATION, 1000 * 60 * 60 * 4)
-        return prefs.getLong(KEY_TIMER_DURATION, 1000 * 5)
+        return prefs.getLong(KEY_TIMER_DURATION, (4.5 * HOUR).toLong())
+//        return prefs.getLong(KEY_TIMER_DURATION, 1000 * 5)
     }
 }

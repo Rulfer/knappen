@@ -14,7 +14,6 @@ import androidx.annotation.RequiresPermission
 
 class MainButtonHandler(private val context: Context) {
 
-    private val _timerRequestCode: Int = 10;
     private val SECOND: Long = 1000L
     private val MINUTE: Long = 60 * SECOND
     private val HOUR: Long = 60 * MINUTE
