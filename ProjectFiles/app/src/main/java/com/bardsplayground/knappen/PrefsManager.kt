@@ -44,6 +44,7 @@ class PrefsManager (context: Context) {
      * Default value is 4 hours.
      */
     fun getTimerDuration(): Long{
-        return prefs.getLong(KEY_TIMER_DURATION, 1000 * 60 * 60 * 4)
+//        return prefs.getLong(KEY_TIMER_DURATION, 1000 * 60 * 60 * 4)
+        return prefs.getLong(KEY_TIMER_DURATION, 1000 * 5)
     }
 }

@@ -10,6 +10,6 @@ class Timer : BroadcastReceiver() {
         Log.i("Timer", "Timer finished!")
         // We can assume its time to re-activate the button!
         val handler = MainButtonHandler(context)
-        handler.resumeButtonInteractive()
+        handler.onTimerTriggered()
     }
 }

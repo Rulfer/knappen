@@ -16,6 +16,7 @@ import android.widget.RemoteViews
 class MainWidget : AppWidgetProvider() {
     companion object {
         const val ACTION_BUTTON_CLICK = "com.bardsplayground.knappen.BUTTON_CLICKED"
+        const val ACTION_BUTTON_RESET_CLICK = "com.bardsplayground.knappen.RESET_BUTTON"
         const val ACTION_OPEN_SETTINGS = "com.bardsplayground.knappen.OPEN_SETTINGS"
         const val ACTION_REQUEST_PERMISSION = "com.bardsplayground.knappen.REQUEST_PERMISSION"
 
@@ -57,6 +58,12 @@ class MainWidget : AppWidgetProvider() {
             // 👉 Delegate to your handler
             val handler = MainButtonHandler(context)
             handler.onMainButtonClicked()
+            return
+        }
+        if(intent.action == ACTION_BUTTON_RESET_CLICK){
+            val handler = MainButtonHandler(context);
+            handler.onResetButtonClicked()
+            return;
         }
     }
 }
@@ -79,6 +86,12 @@ internal fun updateAppWidget(
         putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
     }
 
+    // Create an intent to broadcast when the button is clicked
+    val resetIntent = Intent(context, MainWidget::class.java).apply {
+        action = MainWidget.ACTION_BUTTON_RESET_CLICK
+        putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+    }
+
 
 
     val pendingIntent = PendingIntent.getBroadcast(
@@ -88,10 +101,18 @@ internal fun updateAppWidget(
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
+    val pendingResetIntent = PendingIntent.getBroadcast(
+        context,
+        appWidgetId,
+        resetIntent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+
     val handler = MainButtonHandler(context)
     handler.refresh()
 
     views.setOnClickPendingIntent(R.id.main_button, pendingIntent)
+    views.setOnClickPendingIntent(R.id.reset_button, pendingResetIntent)
 
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)

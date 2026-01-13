@@ -11,21 +11,24 @@ import android.util.Log
 import android.widget.RemoteViews
 import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
-import kotlin.math.ceil
 
 class MainButtonHandler(private val context: Context) {
 
-    private val prefs = PrefsManager(context)
+    private val SECOND =1_000L
+    private val MINUTE = 60 * SECOND
+    private val HOUR = 60 * MINUTE
+
+    val prefs = PrefsManager(context)
     private val notificationHandler = NotificationHandler(context)
 
     fun onMainButtonClicked() {
         Log.d("Knappen", "onMainButtonClicked")
 
-        if(prefs.isTimerActive() && timeUntilTrigger() > 0)
+        if(prefs.isTimerActive() && timeUntilTriggerMs() > 0)
         {
             // Display 'not clickable' with extra fail safe
 //            toast("Knappen is clickable in ${timeUntilTriggerString()}.")
-
+            Log.d("Button handler", "Should be disabled.")
             setIsInteractable(false)
             return;
         }
@@ -37,33 +40,54 @@ class MainButtonHandler(private val context: Context) {
 
     }
 
-    fun longHours(): Long{
-        return  1000 * 60 * 60
+    fun onResetButtonClicked() {
+        Log.d("Button handler", "onResetButtonClicked")
+        prefs.setTimerActive(false)
+        onMainButtonClicked()
     }
 
-    fun timeUntilTrigger(): Long{
+    fun longHours(): Long{
+//        return  1000 * 60 * 60
+        return 1000 * 5;
+    }
 
-        val diff = prefs.getTriggerTime() - System.currentTimeMillis()
-        return ceil(diff.toDouble() / longHours().toDouble()).toLong()
+    fun timeUntilTriggerMs():Long {
+        return prefs.getTriggerTime() - System.currentTimeMillis()
     }
 
     fun timeUntilTriggerString(): String {
         val diff = prefs.getTriggerTime() - System.currentTimeMillis()
-        if (diff <= 0) return "now"
+        if (diff <=0)
+            return "now"
 
-        val hours = diff / longHours()
-        val minutes = (diff % longHours()) / (1000 * 60)
-        return if (hours > 0)
-            "${hours}h ${minutes}m"
-        else
-            "${minutes}m"
+        val hours = diff / HOUR
+        val minutes = (diff % HOUR) / MINUTE
+        val seconds = (diff % MINUTE) / SECOND
+        return when {
+            hours >0 ->"${hours}h${minutes}m"
+            minutes >0 ->"${minutes}m${seconds}s"
+            else ->"${seconds}s"
+        }
     }
+
+//    fun timeUntilTriggerString(): String {
+//        val diff = prefs.getTriggerTime() - System.currentTimeMillis()
+//        if (diff <= 0) return "now"
+//
+//        val hours = diff / longHours()
+//        val minutes = (diff % longHours()) / (1000 * 60)
+//        return if (hours > 0)
+//            "${hours}h ${minutes}m"
+//        else
+//            "${minutes}m"
+//    }
 
     /**
      * Resets the text on the button and makes it interactable again.
      */
-    fun resumeButtonInteractive() {
+    fun onTimerTriggered() {
 //        toast("Button can be clicked on again!")
+        notificationHandler.createNotification("Knappen er klikkbar igjen!")
         setButtonText("Knappen")
         prefs.setTimerActive(active = false)
 
@@ -170,7 +194,7 @@ class MainButtonHandler(private val context: Context) {
         prefs.setTriggerTime(triggerTime)
         prefs.setTimerActive(active = true)
 
-        notificationHandler.createNotification("Button is clicked on!")
+//        notificationHandler.createNotification("Button is clicked on!")
 //        toast("Knappen is clickable in ${timeUntilTriggerString()}.")
     }
 
