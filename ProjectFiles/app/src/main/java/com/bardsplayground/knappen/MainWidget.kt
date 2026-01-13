@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.RemoteViews
+import androidx.core.content.ContextCompat
 
 /**
  * Implementation of App Widget functionality.
@@ -54,17 +55,22 @@ class MainWidget : AppWidgetProvider() {
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        if (intent.action == ACTION_BUTTON_CLICK) {
-            // 👉 Delegate to your handler
-            val handler = MainButtonHandler(context)
-            handler.onMainButtonClicked()
-            return
+        val handler = MainButtonHandler(context)
+        when (intent.action) {
+            ACTION_BUTTON_CLICK -> handler.onMainButtonClicked(intent)
+            ACTION_BUTTON_RESET_CLICK -> handler.onResetButtonClicked(intent)
         }
-        if(intent.action == ACTION_BUTTON_RESET_CLICK){
-            val handler = MainButtonHandler(context);
-            handler.onResetButtonClicked()
-            return;
-        }
+    //        if (intent.action == ACTION_BUTTON_CLICK) {
+//            // 👉 Delegate to your handler
+//            val handler = MainButtonHandler(context)
+//            handler.onMainButtonClicked()
+//            return
+//        }
+//        if(intent.action == ACTION_BUTTON_RESET_CLICK){
+//            val handler = MainButtonHandler(context);
+//            handler.onResetButtonClicked()
+//            return;
+//        }
     }
 }
 
@@ -73,47 +79,54 @@ internal fun updateAppWidget(
     appWidgetManager: AppWidgetManager,
     appWidgetId: Int
 ) {
-
-//    val widgetText = loadTitlePref(context, appWidgetId)
-    // Construct the RemoteViews object
     val views = RemoteViews(context.packageName, R.layout.main_widget)
-    val requestPermissionView = RemoteViews(context.packageName, R.layout.activity_permission)
-//    views.setTextViewText(R.id.appwidget_text, widgetText)
+    val handler = MainButtonHandler(context)
+    val isInteractable = !handler.prefs.isTimerActive()
+    val buttonColor =if (isInteractable) {
+        ContextCompat.getColor(context, R.color.button_interactable)
+    }else {
+        ContextCompat.getColor(context, R.color.button_disabled)
+    }
+    val textColor =if (isInteractable) {
+        ContextCompat.getColor(context, R.color.button_text_interactable)
+    }else {
+        ContextCompat.getColor(context, R.color.button_text_disabled)
+    }
 
-    // Create an intent to broadcast when the button is clicked
-    val intent = Intent(context, MainWidget::class.java).apply {
+    val buttonText =if (isInteractable) {
+        "Knappen"
+    }else {
+        handler.timeUntilTriggerString()
+    }
+
+    views.setTextViewText(R.id.main_button, buttonText)
+    views.setTextColor(R.id.main_button, textColor)
+    views.setInt(R.id.main_button,"setBackgroundColor", buttonColor)
+
+    val clickIntent = Intent(context, MainWidget::class.java).apply {
         action = MainWidget.ACTION_BUTTON_CLICK
         putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
     }
-
-    // Create an intent to broadcast when the button is clicked
     val resetIntent = Intent(context, MainWidget::class.java).apply {
         action = MainWidget.ACTION_BUTTON_RESET_CLICK
         putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
     }
 
-
-
-    val pendingIntent = PendingIntent.getBroadcast(
+    val clickPendingIntent = PendingIntent.getBroadcast(
         context,
-        appWidgetId,
-        intent,
+        appWidgetId *10 +1,
+        clickIntent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
-
-    val pendingResetIntent = PendingIntent.getBroadcast(
+    val resetPendingIntent = PendingIntent.getBroadcast(
         context,
-        appWidgetId,
+        appWidgetId *10 +2,
         resetIntent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
-    val handler = MainButtonHandler(context)
-    handler.refresh()
+    views.setOnClickPendingIntent(R.id.main_button, clickPendingIntent)
+    views.setOnClickPendingIntent(R.id.reset_button, resetPendingIntent)
 
-    views.setOnClickPendingIntent(R.id.main_button, pendingIntent)
-    views.setOnClickPendingIntent(R.id.reset_button, pendingResetIntent)
-
-    // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }

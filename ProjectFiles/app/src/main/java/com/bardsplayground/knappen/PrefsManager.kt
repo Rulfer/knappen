@@ -11,17 +11,22 @@ class PrefsManager (context: Context) {
     private val KEY_TIMER_DURATION = "timer_duration"
 
     /**
-     * Store the current 'is timer active' state. It will also remove the 'trigger at' value when 'active' is false.
+     * Store the current 'is timer active' state. It will also remove the 'trigger at' value when 'active' is false, and call setTriggerTime to -1L.
      */
     fun setTimerActive(active: Boolean) {
         prefs.edit().putBoolean(KEY_TIMER_ACTIVE, active).apply()
 
-        if(!active)
+        if(!active){
             prefs.edit().remove(KEY_TIMER_TRIGGER)
+            setTriggerTime(-1L)
+        }
     }
 
+    /**
+     * Returns true if both KEY_TIMER_ACTIVE is true and KEY_TIMER_TRIGGER isn't -1L
+     */
     fun isTimerActive(): Boolean {
-        return prefs.getBoolean(KEY_TIMER_ACTIVE, false)
+        return prefs.getBoolean(KEY_TIMER_ACTIVE, false) && getTriggerTime() != -1L
     }
 
     fun setTriggerTime(triggerAt: Long) {
@@ -29,14 +34,7 @@ class PrefsManager (context: Context) {
     }
 
     fun getTriggerTime(): Long {
-        return prefs.getLong(KEY_TIMER_TRIGGER, -1)
-    }
-
-    /**
-     * This is how long the button should be disabled after being clicked on, as defined by the user.
-     */
-    fun setTimerDuration(duration: Long){
-        prefs.edit().putLong(KEY_TIMER_DURATION, duration).apply()
+        return prefs.getLong(KEY_TIMER_TRIGGER, -1L)
     }
 
     /**

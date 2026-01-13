@@ -10,7 +10,7 @@ class BootReceiver : BroadcastReceiver() {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
             Log.d("Knappen", "Boot received.")
             val handler = MainButtonHandler(context)
-            handler.onBoot()
+            handler.onBoot(intent)
         }
     }
 }
