@@ -18,9 +18,9 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.bardsplayground.knappen.BUTTON_CLICKED" /> <!-- add this -->
-                <action android:name="com.bardsplayground.knappen.OPEN_SETTINGS" /> <!-- add this -->
-                <action android:name="com.bardsplayground.knappen.REQUEST_PERMISSION" /> <!-- add this -->
+                <action android:name="com.bardsplayground.knappen.BUTTON_CLICKED" />
+                <action android:name="com.bardsplayground.knappen.OPEN_SETTINGS" />
+                <action android:name="com.bardsplayground.knappen.REQUEST_PERMISSION" />
             </intent-filter>
 
             <meta-data
@@ -36,22 +36,22 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <activity
-            android:name=".MainWidgetConfigureActivity"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>
-        </activity>
+<!--        <activity-->
+<!--            android:name=".MainWidgetConfigureActivity"-->
+<!--            android:exported="false">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
         <activity
             android:name=".PermissionActivity"
             android:exported="true"
             android:theme="@style/Theme.Knappen.Dialog">
         </activity>
-        <activity
-            android:name=".ToastActivity"
-            android:exported="true"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+<!--        <activity-->
+<!--            android:name=".ToastActivity"-->
+<!--            android:exported="true"-->
+<!--            android:theme="@android:style/Theme.Translucent.NoTitleBar" />-->
 <!--        <activity-->
 <!--            android:name=".MainActivity"-->
 <!--            android:exported="true"-->

@@ -5,15 +5,16 @@ In no particular order - TODO:
 4. ~~The app can request permission to create Notifications~~
 5. ~~The app has a view where the permission is explained before requested.~~
 6. The Settings-view allows the user to edit how long the button is disabled for
-7. Button should display how long it is untill the button becomes active again
+7. ~~Button should display how long it is untill the button becomes active again~~
 8. Button should automatically refresh 'how long until active again' periodically
 9. Attempt to make a persistant notification that displays how long until the button is re-enabled.
 10. Notification informs the user that the button has been clicked on and the timer started
-11. Notification informs the user when the timer is triggered and the button is clickable again
-12. Finalize 'we need this permission' view / graphics
-13. Add 'options' button on the widget
+11. ~~Notification informs the user when the timer is triggered and the button is clickable again~~
+12. ~~Finalize 'we need this permission' view / graphics~~
+13. ~~Add 'settings' button on the widget~~
 14. Read/Write all options from player prefs
 15. Add localization (first for Norwegian and English Simplified)
+16. Store unique timer for each instance of the widget.
 
 Currently working on:
-7
+3

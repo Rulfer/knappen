@@ -23,8 +23,6 @@ class MainWidget : AppWidgetProvider() {
 
     }
 
-//    var context: Context? = null
-
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -84,8 +82,8 @@ internal fun updateAppWidget(
         action = MainWidget.ACTION_BUTTON_CLICK
         putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
     }
-    val resetIntent = Intent(context, MainWidget::class.java).apply {
-        action = MainWidget.ACTION_BUTTON_RESET_CLICK
+    val settingsIntent = Intent(context, MainWidget::class.java).apply {
+        action = MainWidget.ACTION_OPEN_SETTINGS
         putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
     }
 
@@ -95,15 +93,22 @@ internal fun updateAppWidget(
         clickIntent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
-    val resetPendingIntent = PendingIntent.getBroadcast(
+//    val resetPendingIntent = PendingIntent.getBroadcast(
+//        context,
+//        appWidgetId *10 +2,
+//        resetIntent,
+//        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+//    )
+
+    val settingsPendingIntent = PendingIntent.getBroadcast(
         context,
-        appWidgetId *10 +2,
-        resetIntent,
+        appWidgetId *10 +2, // Keep this  n * 10 + 2 calculation for backwards compatibility.
+        settingsIntent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
     views.setOnClickPendingIntent(R.id.main_button, clickPendingIntent)
-    views.setOnClickPendingIntent(R.id.btn_settings, resetPendingIntent)
+    views.setOnClickPendingIntent(R.id.btn_settings, settingsPendingIntent)
 
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }

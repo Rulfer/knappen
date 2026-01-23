@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:text="Knappen needs permission to send notifications 🛎️"
+        android:text="Knappen trenger tillatelse til å sende notifikasjoner. De sendes kun når Knappen kan trykkes på igjen.️"
         android:textSize="18sp"
         android:textAlignment="center"
         android:paddingBottom="16dp"
@@ -15,7 +15,7 @@
 
     <Button
         android:id="@+id/request_button"
-        android:text="Grant Permission"
+        android:text="Gi tillatelse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </LinearLayout>
