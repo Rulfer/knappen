@@ -26,16 +26,10 @@ class MainButtonHandler(private val context: Context) {
 
         if(prefs.isTimerActive() && timeUntilTriggerMs() > 0)
         {
-            // Display 'not clickable' with extra fail safe
-//            toast("Knappen is clickable in ${timeUntilTriggerString()}.")
             Log.d("Button handler", "Should be disabled.")
             refreshAllWidgets()
-
-//            setIsInteractable(false)
             return;
         }
-
-//        setIsInteractable(isInteractable = false)
         Log.d("Button handler", "Done.")
 
         startTimerTryCatch(intent)
@@ -47,7 +41,6 @@ class MainButtonHandler(private val context: Context) {
         prefs.setTimerActive(false)
         cancelAlarm(intent)
         refreshAllWidgets()
-//        onMainButtonClicked(intent)
     }
 
     fun timeUntilTriggerMs():Long {
@@ -64,7 +57,7 @@ class MainButtonHandler(private val context: Context) {
         val seconds = (diff % MINUTE) / SECOND
         return when {
             hours >0 ->"${hours}h${minutes}m"
-            minutes >0 ->"${minutes}m${seconds}s"
+            minutes >0 ->"${minutes}m"
             else ->"${seconds}s"
         }
     }

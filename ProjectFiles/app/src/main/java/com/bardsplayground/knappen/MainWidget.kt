@@ -60,17 +60,6 @@ class MainWidget : AppWidgetProvider() {
             ACTION_BUTTON_CLICK -> handler.onMainButtonClicked(intent)
             ACTION_BUTTON_RESET_CLICK -> handler.onResetButtonClicked(intent)
         }
-    //        if (intent.action == ACTION_BUTTON_CLICK) {
-//            // 👉 Delegate to your handler
-//            val handler = MainButtonHandler(context)
-//            handler.onMainButtonClicked()
-//            return
-//        }
-//        if(intent.action == ACTION_BUTTON_RESET_CLICK){
-//            val handler = MainButtonHandler(context);
-//            handler.onResetButtonClicked()
-//            return;
-//        }
     }
 }
 
@@ -82,16 +71,6 @@ internal fun updateAppWidget(
     val views = RemoteViews(context.packageName, R.layout.main_widget)
     val handler = MainButtonHandler(context)
     val isInteractable = !handler.prefs.isTimerActive()
-    val buttonColor =if (isInteractable) {
-        ContextCompat.getColor(context, R.color.button_interactable)
-    }else {
-        ContextCompat.getColor(context, R.color.button_disabled)
-    }
-    val textColor =if (isInteractable) {
-        ContextCompat.getColor(context, R.color.button_text_interactable)
-    }else {
-        ContextCompat.getColor(context, R.color.button_text_disabled)
-    }
 
     val buttonText =if (isInteractable) {
         "Knappen"
@@ -100,8 +79,6 @@ internal fun updateAppWidget(
     }
 
     views.setTextViewText(R.id.main_button, buttonText)
-    views.setTextColor(R.id.main_button, textColor)
-    views.setInt(R.id.main_button,"setBackgroundColor", buttonColor)
 
     val clickIntent = Intent(context, MainWidget::class.java).apply {
         action = MainWidget.ACTION_BUTTON_CLICK
@@ -126,7 +103,7 @@ internal fun updateAppWidget(
     )
 
     views.setOnClickPendingIntent(R.id.main_button, clickPendingIntent)
-    views.setOnClickPendingIntent(R.id.reset_button, resetPendingIntent)
+    views.setOnClickPendingIntent(R.id.btn_settings, resetPendingIntent)
 
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
