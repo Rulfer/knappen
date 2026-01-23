@@ -1,6 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/settings_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top|center"
+        android:text="Innstillinger"
+        android:layout_marginBottom="5dp"
+        android:textSize="16sp"
+        />
+    <View style="@style/VerticalDivider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        >
+
+<!--        <TextView-->
+<!--            android:id="@+id/settings_currentTimerDuration"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:gravity="center"-->
+<!--            android:text="Knappen låses i Xt Ym" />-->
+
+<!--        <View style="@style/InlineDivider"/>-->
+
+        <TimePicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+<!--            Sjekk ut denne neste gang:-->
+        https://developer.android.com/develop/ui/views/components/pickers
+            />
+
+<!--        <Button-->
+<!--            android:id="@+id/settings_setTimerDuration"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Endre"-->
+<!--            android:layout_gravity="end"-->
+<!--            />-->
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/settings_resetTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nullstill pågående timer"
+        />
+
+
+</LinearLayout>
