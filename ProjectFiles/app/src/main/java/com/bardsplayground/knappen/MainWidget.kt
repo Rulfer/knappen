@@ -56,7 +56,20 @@ class MainWidget : AppWidgetProvider() {
         val handler = MainButtonHandler(context)
         when (intent.action) {
             ACTION_BUTTON_CLICK -> handler.onMainButtonClicked(intent)
-            ACTION_BUTTON_RESET_CLICK -> handler.onResetButtonClicked(intent)
+//            ACTION_BUTTON_RESET_CLICK -> handler.onResetButtonClicked(intent)
+            ACTION_OPEN_SETTINGS -> {
+                val settingsIntent = Intent(context, SettingsActivity::class.java).apply{
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    putExtra(
+                        AppWidgetManager.EXTRA_APPWIDGET_ID,
+                        intent.getIntExtra(
+                            AppWidgetManager.EXTRA_APPWIDGET_ID,
+                            AppWidgetManager.INVALID_APPWIDGET_ID
+                        )
+                    )
+                }
+                context.startActivity(settingsIntent)
+            }
         }
     }
 }

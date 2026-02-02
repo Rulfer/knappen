@@ -48,6 +48,10 @@
             android:exported="true"
             android:theme="@style/Theme.Knappen.Dialog">
         </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:theme="@style/Theme.Knappen.Dialog"
+            android:exported="false" />
 <!--        <activity-->
 <!--            android:name=".ToastActivity"-->
 <!--            android:exported="true"-->

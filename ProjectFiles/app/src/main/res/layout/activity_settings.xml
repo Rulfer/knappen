@@ -24,29 +24,22 @@
         android:layout_marginBottom="10dp"
         >
 
-<!--        <TextView-->
-<!--            android:id="@+id/settings_currentTimerDuration"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:gravity="center"-->
-<!--            android:text="Knappen låses i Xt Ym" />-->
+        <TextView
+            android:id="@+id/settings_currentTimerDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Knappen låses i Xt Ym" />
 
-<!--        <View style="@style/InlineDivider"/>-->
+        <View style="@style/InlineDivider"/>
 
-        <TimePicker
+        <Button
+            android:id="@+id/settings_setTimerDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-<!--            Sjekk ut denne neste gang:-->
-        https://developer.android.com/develop/ui/views/components/pickers
+            android:text="Endre"
+            android:layout_gravity="end"
             />
-
-<!--        <Button-->
-<!--            android:id="@+id/settings_setTimerDuration"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Endre"-->
-<!--            android:layout_gravity="end"-->
-<!--            />-->
     </LinearLayout>
 
     <Button
