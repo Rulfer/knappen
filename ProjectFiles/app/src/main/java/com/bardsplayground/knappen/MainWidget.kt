@@ -59,7 +59,7 @@ class MainWidget : AppWidgetProvider() {
 //            ACTION_BUTTON_RESET_CLICK -> handler.onResetButtonClicked(intent)
             ACTION_OPEN_SETTINGS -> {
                 val settingsIntent = Intent(context, SettingsActivity::class.java).apply{
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     putExtra(
                         AppWidgetManager.EXTRA_APPWIDGET_ID,
                         intent.getIntExtra(
@@ -68,7 +68,11 @@ class MainWidget : AppWidgetProvider() {
                         )
                     )
                 }
+                settingsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                Log.d("onReceive", "Pls work.")
                 context.startActivity(settingsIntent)
+//                Log.d("onReceive", "Pls work too.")
+
             }
         }
     }

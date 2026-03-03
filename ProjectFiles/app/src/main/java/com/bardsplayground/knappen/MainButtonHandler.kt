@@ -11,12 +11,9 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.annotation.RequiresPermission
+import com.bardsplayground.knappen.helpers.LongValues
 
 class MainButtonHandler(private val context: Context) {
-
-    private val SECOND: Long = 1000L
-    private val MINUTE: Long = 60 * SECOND
-    private val HOUR: Long = 60 * MINUTE
 
     val prefs = PrefsManager(context)
     private val notificationHandler = NotificationHandler(context)
@@ -50,15 +47,14 @@ class MainButtonHandler(private val context: Context) {
     fun timeUntilTriggerString(): String {
         val diff = prefs.getTriggerTime() - System.currentTimeMillis()
         if (diff <=0)
-            return "now"
+            return "nå"
 
-        val hours = diff / HOUR
-        val minutes = (diff % HOUR) / MINUTE
-        val seconds = (diff % MINUTE) / SECOND
+        val time = LongValues.convertLongToStrings(diff)
+
         return when {
-            hours >0 ->"${hours}h${minutes}m"
-            minutes >0 ->"${minutes}m"
-            else ->"${seconds}s"
+            time.hours >0 ->"${time.hours}t${time.minutes}m"
+            time.minutes >0 ->"${time.minutes}m"
+            else ->"${time.seconds}s"
         }
     }
 

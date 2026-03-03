@@ -2,6 +2,7 @@ package com.bardsplayground.knappen
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
 class PrefsManager (context: Context) {
     private val prefs: SharedPreferences = context.getSharedPreferences("widget_prefs", Context.MODE_PRIVATE)
@@ -18,10 +19,10 @@ class PrefsManager (context: Context) {
      * Store the current 'is timer active' state. It will also remove the 'trigger at' value when 'active' is false, and call setTriggerTime to -1L.
      */
     fun setTimerActive(active: Boolean) {
-        prefs.edit().putBoolean(KEY_TIMER_ACTIVE, active).apply()
+        prefs.edit { putBoolean(KEY_TIMER_ACTIVE, active) }
 
         if(!active){
-            prefs.edit().remove(KEY_TIMER_TRIGGER)
+            prefs.edit{remove(KEY_TIMER_TRIGGER)}
             setTriggerTime(-1L)
         }
     }
@@ -34,7 +35,7 @@ class PrefsManager (context: Context) {
     }
 
     fun setTriggerTime(triggerAt: Long) {
-        prefs.edit().putLong(KEY_TIMER_TRIGGER, triggerAt).apply()
+        prefs.edit {putLong(KEY_TIMER_TRIGGER, triggerAt)}
     }
 
     fun getTriggerTime(): Long {
@@ -48,5 +49,15 @@ class PrefsManager (context: Context) {
     fun getTimerDuration(): Long{
         return prefs.getLong(KEY_TIMER_DURATION, (4.5 * HOUR).toLong())
 //        return prefs.getLong(KEY_TIMER_DURATION, 1000 * 5)
+    }
+
+    /**
+     * This is how long the button should be disabled after being clicked on, as defined by the user.
+     * Default value is 4 hours.
+     */
+    fun setTimerDuration(hours: Int, minutes: Int){
+        val hoursLong = (hours * HOUR).toLong()
+        val minutesLong = (minutes * MINUTE).toLong()
+        prefs.edit { putLong(KEY_TIMER_DURATION, hoursLong + minutesLong) }
     }
 }
