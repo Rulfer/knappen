@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    >
 
     <TextView
         android:id="@+id/settings_header"
@@ -15,6 +20,7 @@
         android:layout_marginBottom="5dp"
         android:textSize="16sp"
         />
+
     <View style="@style/VerticalDivider" />
 
     <LinearLayout
@@ -29,6 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:textSize="14sp"
             android:text="Knappen låses i Xt Ym" />
 
         <View style="@style/InlineDivider" />
@@ -38,7 +45,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="Endre" />
+            android:text="Endre"
+            android:textColor="#BB86FC"
+            android:textSize="14sp"
+            android:padding="0dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton" />
     </LinearLayout>
 
     <Button
@@ -46,7 +57,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Nullstill pågående timer"
-        />
-
+        android:textColor="#BB86FC"
+        android:textSize="14sp"
+        android:padding="0dp"
+        style="@style/Widget.MaterialComponents.Button.TextButton" />
 
 </LinearLayout>

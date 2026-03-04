@@ -17,6 +17,7 @@
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
         android:paddingTop="12dp"
+        android:textSize="14sp"
         android:text="Knappen" />
 
     <ImageButton

@@ -8,4 +8,18 @@
         <item name="appWidgetRadius">@android:dimen/system_app_widget_background_radius</item>
         <item name="appWidgetInnerRadius">@android:dimen/system_app_widget_inner_radius</item>
     </style>
+
+    <style name="Theme.Knappen.Dialog" parent="Theme.MaterialComponents.Dialog">
+        <item name="android:windowBackground">@drawable/dialog_background</item>
+        <item name="android:textColor">#FFFFFFFF</item>       <!-- White text -->
+        <item name="colorOnSurface">#FFFFFFFF</item>         <!-- White icons/text on surfaces -->
+        <item name="colorPrimary">#BB86FC</item>             <!-- Purple accent -->
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowMinWidthMajor">80%</item>
+        <item name="android:windowMinWidthMinor">80%</item>
+    </style>
+
 </resources>
