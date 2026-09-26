@@ -16,6 +16,9 @@ class BootReceiver : BroadcastReceiver() {
                 Log.d("Knappen", "Restoring timer after ${intent.action}")
                 MainButtonHandler(context).onBootOrUpdate()
             }
+            // Clock or time zone changed: "today" may be a different day now; redraw and move the midnight alarm.
+            Intent.ACTION_TIME_CHANGED,
+            Intent.ACTION_TIMEZONE_CHANGED -> MainButtonHandler(context).refreshAllWidgets()
             // The phone language changed: redraw widgets and rename the channel (see AppLanguage).
             Intent.ACTION_LOCALE_CHANGED -> {
                 MainButtonHandler(context).refreshAllWidgets()

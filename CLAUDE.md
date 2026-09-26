@@ -26,4 +26,4 @@ Package `com.bardsplayground.knappen`, Kotlin, views/RemoteViews based (Compose 
 - `ProjectFiles/app/src/main/java/com/bardsplayground/knappen/` – all Kotlin sources (flat, 1 helper)
 
 ## Maintenance
-Last full scan: 2026-09-26 (app versionName 1.4 / versionCode 5). Same day: tester-readiness code changes were made (see improvements.md). Built and emulator-tested the same evening (API 36); test progress is in the checklist at the bottom of improvements.md.
+Last full scan: 2026-09-26 (app versionName 1.4 / versionCode 5). Same day: tester-readiness code changes were made (see improvements.md). Built and emulator-tested the same evening (API 36); test progress is in the checklist at the bottom of improvements.md. Then version bumped to 1.5 / code 6 (exact alarms, language rule, daily limit).

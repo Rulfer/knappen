@@ -4,6 +4,8 @@
     <!-- Widget -->
     <string name="widget_countdown_format">Klar om %s</string>
     <string name="widget_settings_description">Åpne innstillinger for widgeten</string>
+    <string name="widget_clicks_left">%1$d av %2$d igjen i dag</string>
+    <string name="widget_none_left">0 igjen i dag</string>
 
     <!-- Notification -->
     <string name="notification_channel_name">Knappen-varsler</string>
@@ -19,6 +21,13 @@
     <string name="settings_change">Endre</string>
     <string name="settings_test_duration">Bruk 1 minutt (for testing)</string>
     <string name="settings_reset">Nullstill pågående timer</string>
+    <plurals name="settings_daily_limit">
+        <item quantity="one">Maks %d gang per dag</item>
+        <item quantity="other">Maks %d ganger per dag</item>
+    </plurals>
+    <string name="settings_no_daily_limit">Ingen daglig grense</string>
+    <string name="settings_daily_limit_picker_title">Ganger per dag</string>
+    <string name="picker_no_limit">Ingen grense</string>
     <string name="settings_picker_title">Velg varighet</string>
     <string name="picker_hours">timer</string>
     <string name="picker_minutes">minutter</string>

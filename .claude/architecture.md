@@ -6,7 +6,7 @@
 - `MainActivity` - launcher activity (view based, theme `Theme.Knappen.Main`).
 - `MainWidget` (receiver, exported) - widget provider; intent filter only has `APPWIDGET_UPDATE`. Custom actions are sent with explicit intents.
 - `Timer` (receiver, NOT exported) - alarm target.
-- `BootReceiver` (receiver, exported) - `BOOT_COMPLETED` and `MY_PACKAGE_REPLACED`.
+- `BootReceiver` (receiver, exported) - `BOOT_COMPLETED` and `MY_PACKAGE_REPLACED` (restore timer), `LOCALE_CHANGED`, `TIME_SET`, `TIMEZONE_CHANGED` (redraw).
 - `PermissionActivity` (not exported, dialog theme), `SettingsActivity` (not exported, dialog theme, noHistory).
 - Permissions: `POST_NOTIFICATIONS`, `USE_EXACT_ALARM` (API 33+, auto-granted), `SCHEDULE_EXACT_ALARM` (maxSdk 32), `RECEIVE_BOOT_COMPLETED`. Exact alarms are needed because the widget Chronometer only returns to idle when the alarm fires; an inexact alarm leaves it counting negative.
 
@@ -16,6 +16,7 @@ State is global (not per widget). All widgets show the same countdown and there 
 ## Persisted state
 `SharedPreferences("widget_prefs")` via `PrefsManager`:
 - `timer_active` (bool), `timer_trigger` (epoch ms, -1 = none), `timer_duration` (ms, default 4.5 h, minimum 1 min), `notification_permission_prompted` (bool).
+- Daily limit: `daily_limit` (int, default 4, 0 = no limit, max 24), `clicks_day` (local day as yyyyMMdd) + `clicks_count` (taps on that day). A count stored for another day means 0 used, so the reset at midnight needs no write.
 - `hasStoredTimer()` = active flag && trigger != -1. `isTimerActive()` = `hasStoredTimer()` && trigger > now (derived from the clock, so a late/missed alarm cannot leave the widget stuck).
 - The file is excluded from cloud backup / device transfer (`backup_rules.xml`, `data_extraction_rules.xml`), so a restored phone never gets a timer without an alarm (this also drops the saved duration).
 - Separate prefs file `com.bardsplayground.knappen.MainWidget` holds a leftover per-widget "title" (dead feature).
@@ -26,6 +27,14 @@ State is global (not per widget). All widgets show the same countdown and there 
 3. If `isTimerActive()`: only refresh widgets. Otherwise: `NotificationHandler.promptForPermissionOnce()` (opens `PermissionActivity` once if notifications are not allowed; behaviour of starting an activity from the receiver on a widget tap should be verified on Android 10+), then `startTimer`.
 4. `startTimer`: trigger = now + duration; cancels legacy alarms; exact alarm (`setExactAndAllowWhileIdle`) unless API 31+ and `canScheduleExactAlarms()` is false, then `setAndAllowWhileIdle` (only reachable on API 31-32 after the user revoked it; can be very late). Stores trigger + active, refreshes widgets.
 5. Widget rendering: idle -> `main_button` TextView ("Knappen"); locked -> `main_countdown` Chronometer in count-down mode with base = `elapsedRealtime + remaining` and format "Ready in %s". The Chronometer ticks by itself, no periodic refresh needed.
+
+## Daily limit (added 2026-09-26, owner's decision)
+The X-hour lock and a cap of Y taps per calendar day (resets at local midnight) apply together. Wording stays generic ("times"/"left today"), since the app is not only for medicine.
+- Tap: blocked (only refresh) if the timer is active OR today's taps are used up. Otherwise `recordClick()`, then `startTimer` as before.
+- The last tap of the day still starts the timer, so the X-hour lock also holds across midnight. When it fires while the cap is still reached, `onTimerTriggered` sends NO notification.
+- Widget: `main_clicks_left` ("3 of 4 left today", bottom-left, not clickable so taps fall through) while taps remain. At 0 the widget shows only "0 left today" in `main_button` (no countdown, counter line hidden). With no limit the counter line is hidden.
+- Midnight: `scheduleDayChangeRefresh()` sets a non-waking `RTC` exact alarm (requestCode 43, action `DAY_CHANGED` to `MainWidget`) for the next local midnight; it redraws and re-schedules. Scheduled from every `refreshAllWidgets()` and `onUpdate`, cancelled in `onDisabled`. `TIME_SET` / `TIMEZONE_CHANGED` (BootReceiver) redraw and move it.
+- Changing the limit applies to today immediately (Settings redraws the widgets).
 
 ## Flow: alarm fires
 `Timer.onReceive` -> `onTimerTriggered()` -> notification (only if permission granted; never opens an activity from the receiver) -> `setTimerActive(false)` -> refresh widgets.

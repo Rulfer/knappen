@@ -12,6 +12,8 @@
     <string name="widget_idle_text" translatable="false">Knappen</string>
     <string name="widget_countdown_format">Ready in %s</string>
     <string name="widget_settings_description">Open the widget settings</string>
+    <string name="widget_clicks_left">%1$d of %2$d left today</string>
+    <string name="widget_none_left">0 left today</string>
 
     <!-- Notification -->
     <string name="notification_title" translatable="false">Knappen</string>
@@ -28,6 +30,13 @@
     <string name="settings_change">Change</string>
     <string name="settings_test_duration">Use 1 minute (for testing)</string>
     <string name="settings_reset">Reset running timer</string>
+    <plurals name="settings_daily_limit">
+        <item quantity="one">Max %d time per day</item>
+        <item quantity="other">Max %d times per day</item>
+    </plurals>
+    <string name="settings_no_daily_limit">No daily limit</string>
+    <string name="settings_daily_limit_picker_title">Times per day</string>
+    <string name="picker_no_limit">No limit</string>
     <string name="settings_picker_title">Choose duration</string>
     <string name="picker_hours">hours</string>
     <string name="picker_minutes">minutes</string>

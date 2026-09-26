@@ -19,6 +19,9 @@ class MainWidget : AppWidgetProvider() {
 
         /** Only handled for widgets that still hold an intent from an older version; the gear now opens the activity directly. */
         const val ACTION_OPEN_SETTINGS = "com.bardsplayground.knappen.OPEN_SETTINGS"
+
+        /** Sent by the midnight alarm (see [MainButtonHandler.scheduleDayChangeRefresh]). */
+        const val ACTION_DAY_CHANGED = "com.bardsplayground.knappen.DAY_CHANGED"
     }
 
     override fun onUpdate(
@@ -30,6 +33,12 @@ class MainWidget : AppWidgetProvider() {
         for (appWidgetId in appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId)
         }
+        MainButtonHandler(context).scheduleDayChangeRefresh()
+    }
+
+    override fun onDisabled(context: Context) {
+        // Last widget removed: nothing left to redraw at midnight.
+        MainButtonHandler(context).cancelDayChangeRefresh()
     }
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
@@ -43,6 +52,7 @@ class MainWidget : AppWidgetProvider() {
         super.onReceive(context, intent)
         when (intent.action) {
             ACTION_BUTTON_CLICK -> MainButtonHandler(context).onMainButtonClicked()
+            ACTION_DAY_CHANGED -> MainButtonHandler(context).refreshAllWidgets()
             ACTION_OPEN_SETTINGS -> context.startActivity(
                 settingsIntent(
                     context,
@@ -74,8 +84,24 @@ internal fun updateAppWidget(
     val text = AppLanguage.localized(context)
     views.setContentDescription(R.id.btn_settings, text.getString(R.string.widget_settings_description))
 
-    if (prefs.isTimerActive()) {
+    val clicksLeft = prefs.getClicksLeftToday()
+    if (prefs.hasDailyLimit()) {
+        views.setTextViewText(
+            R.id.main_clicks_left,
+            text.getString(R.string.widget_clicks_left, clicksLeft, prefs.getDailyLimit())
+        )
+    }
+
+    if (clicksLeft == 0) {
+        // All of today's taps are used: only say so (no countdown, even if the timer still runs in the background).
+        views.setChronometer(R.id.main_countdown, SystemClock.elapsedRealtime(), null, false)
+        views.setViewVisibility(R.id.main_countdown, View.GONE)
+        views.setViewVisibility(R.id.main_clicks_left, View.GONE)
+        views.setViewVisibility(R.id.main_button, View.VISIBLE)
+        views.setTextViewText(R.id.main_button, text.getString(R.string.widget_none_left))
+    } else if (prefs.isTimerActive()) {
         // Locked: show a live countdown. The Chronometer ticks by itself, no wake-ups or refresh loop needed.
+        views.setViewVisibility(R.id.main_clicks_left, if (prefs.hasDailyLimit()) View.VISIBLE else View.GONE)
         val remainingMs = prefs.getTriggerTime() - System.currentTimeMillis()
         views.setViewVisibility(R.id.main_button, View.GONE)
         views.setViewVisibility(R.id.main_countdown, View.VISIBLE)
@@ -89,7 +115,9 @@ internal fun updateAppWidget(
     } else {
         views.setChronometer(R.id.main_countdown, SystemClock.elapsedRealtime(), null, false)
         views.setViewVisibility(R.id.main_countdown, View.GONE)
+        views.setViewVisibility(R.id.main_clicks_left, if (prefs.hasDailyLimit()) View.VISIBLE else View.GONE)
         views.setViewVisibility(R.id.main_button, View.VISIBLE)
+        views.setTextViewText(R.id.main_button, text.getString(R.string.widget_idle_text))
     }
 
     val clickIntent = Intent(context, MainWidget::class.java).apply {

@@ -39,6 +39,7 @@ File references are in `ProjectFiles/app/src/main/java/com/bardsplayground/knapp
 5. **Open Settings without the receiver hop: done** (gear uses `PendingIntent.getActivity`; the old broadcast branch stays for stale widget intents).
 6. **Widget config (optional): open** - wire or delete `MainWidgetConfigureActivity`.
 7. **Launcher entry: done.** `MainActivity` (view based) explains setup, has "Add widget" (pin request, API 26+), shows notification / exact-alarm status with grant buttons, opens Settings.
+9. **Daily limit: done (2026-09-26, emulator-verified incl. a real midnight).** Max Y taps per calendar day (default 4, 1-24 or no limit) on top of the X-hour lock; "x of y left today" on the widget, "0 left today" when used up. Open ideas: an option to also reset today's count from Settings (deliberately not added - for medicine use that would make the cap easy to bypass).
 8. **Tester support: done.** Settings has "Use 1 minute (for testing)"; minimum duration is 1 minute.
 
 ## D. Code / build cleanup

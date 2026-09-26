@@ -20,6 +20,9 @@ class MainButtonHandler(private val context: Context) {
          * (older versions used `widgetId * 10 + 1`, see [cancelLegacyAlarms]).
          */
         const val ALARM_REQUEST_CODE = 42
+
+        /** Request code of the (non-waking) midnight alarm that redraws the widgets when the daily count resets. */
+        private const val DAY_CHANGE_REQUEST_CODE = 43
     }
 
     val prefs = PrefsManager(context)
@@ -28,14 +31,15 @@ class MainButtonHandler(private val context: Context) {
     fun onMainButtonClicked() {
         Log.d(TAG, "onMainButtonClicked")
 
-        if (prefs.isTimerActive()) {
-            // Still locked - just make sure the widgets show the right state.
+        if (prefs.isTimerActive() || prefs.isDailyLimitReached()) {
+            // Still locked, or all of today's taps are used - just make sure the widgets show the right state.
             refreshAllWidgets()
             return
         }
 
         // Ask for notification permission once, from a user-initiated tap.
         notificationHandler.promptForPermissionOnce(prefs)
+        prefs.recordClick()
         startTimerTryCatch()
     }
 
@@ -46,11 +50,15 @@ class MainButtonHandler(private val context: Context) {
 
     /**
      * Called by the alarm. Notifies the user and makes the button clickable again.
+     * The timer also runs after the last tap of the day (so the lock still holds across midnight), but then the
+     * button is not really clickable until midnight, so no notification is sent.
      */
     fun onTimerTriggered() {
-        notificationHandler.createNotification(
-            AppLanguage.localized(context).getString(R.string.notification_ready)
-        )
+        if (!prefs.isDailyLimitReached()) {
+            notificationHandler.createNotification(
+                AppLanguage.localized(context).getString(R.string.notification_ready)
+            )
+        }
         prefs.setTimerActive(active = false)
         refreshAllWidgets()
     }
@@ -145,8 +153,44 @@ class MainButtonHandler(private val context: Context) {
     fun refreshAllWidgets() {
         val manager = AppWidgetManager.getInstance(context)
         val component = ComponentName(context, MainWidget::class.java)
-        for (id in manager.getAppWidgetIds(component)) {
+        val ids = manager.getAppWidgetIds(component)
+        for (id in ids) {
             updateAppWidget(context, manager, id)
         }
+        if (ids.isNotEmpty()) scheduleDayChangeRefresh()
+    }
+
+    /**
+     * Redraw the widgets at the next local midnight, when the daily count resets ("x left today", and a capped
+     * widget becomes tappable again). RTC (not _WAKEUP): delivered when the phone is next awake, which is enough
+     * for a display update. Re-scheduling replaces the previous one (same PendingIntent).
+     */
+    fun scheduleDayChangeRefresh() {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val triggerAt = PrefsManager.nextMidnight(System.currentTimeMillis())
+        val pendingIntent = dayChangePendingIntent()
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
+                alarmManager.set(AlarmManager.RTC, triggerAt, pendingIntent)
+            } else {
+                alarmManager.setExact(AlarmManager.RTC, triggerAt, pendingIntent)
+            }
+        } catch (e: SecurityException) {
+            alarmManager.set(AlarmManager.RTC, triggerAt, pendingIntent)
+        }
+    }
+
+    fun cancelDayChangeRefresh() {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.cancel(dayChangePendingIntent())
+    }
+
+    private fun dayChangePendingIntent(): PendingIntent {
+        return PendingIntent.getBroadcast(
+            context,
+            DAY_CHANGE_REQUEST_CODE,
+            Intent(context, MainWidget::class.java).setAction(MainWidget.ACTION_DAY_CHANGED),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
     }
 }

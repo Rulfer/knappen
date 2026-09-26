@@ -8,7 +8,7 @@ Decisions (2026-09-26): personal developer account (no registered company, so no
 - Opt-outs break the count: recruit 15-20 people for a target of 12.
 
 ## Preparing the test build
-- Bump `versionCode` (currently 5) and `versionName` in `app/build.gradle.kts` for every upload.
+- Bump `versionCode` (currently 6, versionName 1.5) and `versionName` in `app/build.gradle.kts` for every upload.
 - Build a signed `.aab` (owner keeps the key; never commit keystores). Use Play App Signing.
 - Tester-friendly features already in the code: launcher screen with setup steps and pin-widget button, live countdown, 1-minute test duration in Settings, notification permission status.
 - Play Console: privacy policy URL (needed; the app collects nothing, only local prefs), data safety form, app content declarations (the exact-alarm declaration IS required: the app uses `USE_EXACT_ALARM`, which Play only allows for alarm/timer apps - describe Knappen as a timer whose core function is the "ready again" alert at an exact time), store listing graphics from `Logos/`.
