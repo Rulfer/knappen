@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_widget_description">En knapp som låses en stund etter hvert trykk</string>
+
+    <!-- Widget -->
+    <string name="widget_countdown_format">Klar om %s</string>
+    <string name="widget_settings_description">Åpne innstillinger for widgeten</string>
+
+    <!-- Notification -->
+    <string name="notification_channel_name">Knappen-varsler</string>
+    <string name="notification_ready">Knappen er klikkbar igjen!</string>
+
+    <!-- Permission screen -->
+    <string name="permission_explanation">Knappen trenger tillatelse til å sende varsler. De sendes kun når Knappen kan trykkes på igjen.</string>
+    <string name="permission_grant">Gi tillatelse</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Innstillinger</string>
+    <string name="settings_lock_duration">Knappen låses i %1$dt %2$dm</string>
+    <string name="settings_change">Endre</string>
+    <string name="settings_test_duration">Bruk 1 minutt (for testing)</string>
+    <string name="settings_reset">Nullstill pågående timer</string>
+    <string name="settings_picker_title">Velg varighet</string>
+    <string name="picker_hours">timer</string>
+    <string name="picker_minutes">minutter</string>
+    <string name="action_cancel">Avbryt</string>
+
+    <!-- Main screen -->
+    <string name="main_intro">En knapp som låses en stund etter at du trykker på den, og varsler deg når den er klar igjen.</string>
+    <string name="main_setup_title">Kom i gang</string>
+    <string name="main_setup_steps">1. Trykk og hold på et tomt sted på startskjermen.\n2. Åpne Widgets og velg Knappen.\n3. Dra den ut på startskjermen.\n4. Trykk på knappen for å starte timeren.</string>
+    <string name="main_add_widget">Legg widget på startskjermen</string>
+    <string name="main_status_title">Status</string>
+    <string name="main_notifications_on">Varsler: tillatt</string>
+    <string name="main_notifications_off">Varsler er av. Knappen trenger dem for å si fra når knappen er klar.</string>
+    <string name="main_allow_notifications">Tillat varsler</string>
+    <string name="main_exact_off">Nøyaktig timing er av. Varselet kan komme noen minutter for sent.</string>
+    <string name="main_allow_exact">Tillat nøyaktig timing</string>
+    <string name="main_open_settings">Innstillinger</string>
+    <string name="main_test_hint">Tester du? Åpne innstillingene og velg 1 minutt for å se en hel runde raskt.</string>
+</resources>

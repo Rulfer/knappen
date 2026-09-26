@@ -15,4 +15,5 @@
     <color name="button_text_interactable">#FF000000</color>
     <color name="button_disabled">#FF000000</color>
     <color name="button_text_disabled">#FFFFFFFF</color>
+    <color name="main_background">#FF414141</color>
 </resources>

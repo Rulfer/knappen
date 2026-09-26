@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="top|center"
-        android:text="Innstillinger"
+        android:text="@string/settings_title"
         android:layout_marginBottom="5dp"
         android:textSize="16sp"
         />
@@ -35,8 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:textSize="14sp"
-            android:text="Knappen låses i Xt Ym" />
+            android:textSize="14sp" />
 
         <View style="@style/InlineDivider" />
 
@@ -45,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="Endre"
+            android:text="@string/settings_change"
             android:textColor="#BB86FC"
             android:textSize="14sp"
             android:padding="0dp"
@@ -53,10 +52,20 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/settings_testDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_test_duration"
+        android:textColor="#BB86FC"
+        android:textSize="14sp"
+        android:padding="0dp"
+        style="@style/Widget.MaterialComponents.Button.TextButton" />
+
+    <Button
         android:id="@+id/settings_resetTimer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nullstill pågående timer"
+        android:text="@string/settings_reset"
         android:textColor="#BB86FC"
         android:textSize="14sp"
         android:padding="0dp"

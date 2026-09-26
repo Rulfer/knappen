@@ -14,7 +14,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="timer"
+        android:text="@string/picker_hours"
         android:gravity="center"
         android:layout_gravity="center"/>
 
@@ -27,7 +27,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="minutter"
+        android:text="@string/picker_minutes"
         android:gravity="center"
         android:layout_gravity="center"/>
 

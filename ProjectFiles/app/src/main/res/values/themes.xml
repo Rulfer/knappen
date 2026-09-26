@@ -34,4 +34,11 @@
 <!--        <item name="android:windowMinWidthMajor">90%</item>-->
 <!--        <item name="android:windowMinWidthMinor">90%</item>-->
 <!--    </style>-->
+
+    <!-- Launcher screen (MainActivity) -->
+    <style name="Theme.Knappen.Main" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowBackground">@color/main_background</item>
+        <item name="colorPrimary">#BB86FC</item>
+        <item name="colorOnSurface">#FFFFFFFF</item>
+    </style>
 </resources>

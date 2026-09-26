@@ -7,123 +7,91 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.annotation.RequiresPermission
-import com.bardsplayground.knappen.helpers.LongValues
 
 class MainButtonHandler(private val context: Context) {
+
+    companion object {
+        private const val TAG = "Knappen"
+
+        /**
+         * One fixed request code for the single, shared timer alarm. Must not end in 1
+         * (older versions used `widgetId * 10 + 1`, see [cancelLegacyAlarms]).
+         */
+        const val ALARM_REQUEST_CODE = 42
+    }
 
     val prefs = PrefsManager(context)
     private val notificationHandler = NotificationHandler(context)
 
-    fun onMainButtonClicked(intent: Intent) {
-        Log.d("Knappen", "onMainButtonClicked")
+    fun onMainButtonClicked() {
+        Log.d(TAG, "onMainButtonClicked")
 
-        if(prefs.isTimerActive() && timeUntilTriggerMs() > 0)
-        {
-            Log.d("Button handler", "Should be disabled.")
+        if (prefs.isTimerActive()) {
+            // Still locked - just make sure the widgets show the right state.
             refreshAllWidgets()
-            return;
+            return
         }
-        Log.d("Button handler", "Done.")
 
-        startTimerTryCatch(intent)
-
+        // Ask for notification permission once, from a user-initiated tap.
+        notificationHandler.promptForPermissionOnce(prefs)
+        startTimerTryCatch()
     }
 
-    fun onResetButtonClicked(intent: Intent) {
-        Log.d("Button handler", "onResetButtonClicked")
-        prefs.setTimerActive(false)
-        cancelAlarm(intent)
-        refreshAllWidgets()
-    }
-
-    fun timeUntilTriggerMs():Long {
-        return prefs.getTriggerTime() - System.currentTimeMillis()
-    }
-
-    fun timeUntilTriggerString(): String {
-        val diff = prefs.getTriggerTime() - System.currentTimeMillis()
-        if (diff <=0)
-            return "nå"
-
-        val time = LongValues.convertLongToStrings(diff)
-
-        return when {
-            time.hours >0 ->"${time.hours}t${time.minutes}m"
-            time.minutes >0 ->"${time.minutes}m"
-            else ->"${time.seconds}s"
-        }
+    fun onResetButtonClicked() {
+        Log.d(TAG, "onResetButtonClicked")
+        cancelAlarm()
     }
 
     /**
-     * Resets the text on the button and makes it interactable again.
+     * Called by the alarm. Notifies the user and makes the button clickable again.
      */
     fun onTimerTriggered() {
-        notificationHandler.createNotification("Knappen er klikkbar igjen!")
+        notificationHandler.createNotification(context.getString(R.string.notification_ready))
         prefs.setTimerActive(active = false)
         refreshAllWidgets()
     }
 
-    fun onBoot(intent: Intent){
-        if (prefs.isTimerActive() && prefs.getTriggerTime() > System.currentTimeMillis()) {
-            startTimerTryCatch(intent, prefs.getTriggerTime())
-        }else {
-            prefs.setTimerActive(false)
+    /**
+     * Called after boot and after the app has been updated (both drop scheduled alarms).
+     * Re-schedules a running timer, or finishes one that ran out while the phone was off.
+     */
+    fun onBootOrUpdate() {
+        if (prefs.hasStoredTimer()) {
+            val triggerAt = prefs.getTriggerTime()
+            if (triggerAt > System.currentTimeMillis()) {
+                startTimerTryCatch(triggerAt)
+            } else {
+                onTimerTriggered()
+            }
         }
-
-        // schedule a small delayed refresh to ensure widgets exist
-        Handler(Looper.getMainLooper()).postDelayed({
-            refreshAllWidgets()
-        },500)
+        refreshAllWidgets()
     }
 
-    private fun startTimerTryCatch(intent: Intent, triggerAt:Long = -1)
-    {
+    private fun startTimerTryCatch(triggerAt: Long = -1L) {
         try {
-            startTimer(intent, triggerAt)
-        }
-        catch (e: SecurityException)
-        {
-            Log.d("Error", e.message.toString())
+            startTimer(triggerAt)
+        } catch (e: SecurityException) {
+            Log.e(TAG, "Could not schedule alarm: ${e.message}")
         }
     }
 
     @RequiresPermission(value = "android.permission.SCHEDULE_EXACT_ALARM", conditional = true)
-    private fun startTimer(intent: Intent, triggerAt:Long = -1) {
+    private fun startTimer(triggerAt: Long = -1L) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val triggerTime: Long = if (triggerAt != (-1).toLong()) triggerAt else System.currentTimeMillis() + prefs.getTimerDuration()
+        val triggerTime =
+            if (triggerAt != -1L) triggerAt else System.currentTimeMillis() + prefs.getTimerDuration()
+        val pendingIntent = alarmPendingIntent()
 
-        val packageContext = Intent(context, Timer::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            getAlarmRequestCode(intent),
-            packageContext,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        cancelLegacyAlarms(alarmManager)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (alarmManager.canScheduleExactAlarms()) {
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    triggerTime,
-                    pendingIntent
-                )
-            } else {
-                alarmManager.set(
-                    AlarmManager.RTC_WAKEUP,
-                    triggerTime,
-                    pendingIntent
-                )
-            }
-        }
-        else{
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                triggerTime,
-                pendingIntent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
+            // Only possible on API 31-32 when the user revoked SCHEDULE_EXACT_ALARM (API 33+ has USE_EXACT_ALARM).
+            // Inexact alarms can be very late, and the widget countdown then runs past 0:00.
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent)
+        } else {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent)
         }
 
         prefs.setTriggerTime(triggerTime)
@@ -131,33 +99,52 @@ class MainButtonHandler(private val context: Context) {
         refreshAllWidgets()
     }
 
-    private fun cancelAlarm(intent: Intent){
+    private fun cancelAlarm() {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val packageContext = Intent(context, Timer::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            getAlarmRequestCode(intent),// MUST be the same requestCode as startTimer
-            packageContext,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        alarmManager.cancel(pendingIntent)// cancels the alarm
+        alarmManager.cancel(alarmPendingIntent())
+        cancelLegacyAlarms(alarmManager)
 
         prefs.setTimerActive(active = false)
         refreshAllWidgets()
     }
 
-    fun refreshAllWidgets() {
+    private fun alarmPendingIntent(): PendingIntent {
+        return PendingIntent.getBroadcast(
+            context,
+            ALARM_REQUEST_CODE,
+            Intent(context, Timer::class.java),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+    }
+
+    /**
+     * Versions up to 1.4 used `appWidgetId * 10 + 1` as request code (and -9 after a reboot).
+     * Cancel any such alarms left over from an older version so they cannot fire a second time.
+     */
+    private fun cancelLegacyAlarms(alarmManager: AlarmManager) {
         val manager = AppWidgetManager.getInstance(context)
-        val component = ComponentName(context, MainWidget::class.java)
-        val ids = manager.getAppWidgetIds(component)
-        for (id in ids) {
-            updateAppWidget(context, manager, id)
+        val ids = manager.getAppWidgetIds(ComponentName(context, MainWidget::class.java))
+        val legacyCodes = ids.map { it * 10 + 1 } + (-9)
+
+        for (code in legacyCodes.filter { it != ALARM_REQUEST_CODE }) {
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                code,
+                Intent(context, Timer::class.java),
+                PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
+            )
+            if (pendingIntent != null) {
+                alarmManager.cancel(pendingIntent)
+                pendingIntent.cancel()
+            }
         }
     }
 
-    fun getAlarmRequestCode(intent: Intent): Int{
-        return intent.getIntExtra("appWidgetId", -1) * 10 + 1;
-
+    fun refreshAllWidgets() {
+        val manager = AppWidgetManager.getInstance(context)
+        val component = ComponentName(context, MainWidget::class.java)
+        for (id in manager.getAppWidgetIds(component)) {
+            updateAppWidget(context, manager, id)
+        }
     }
 }

@@ -5,12 +5,17 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 
+/**
+ * Restores a running timer after a reboot or an app update (both remove scheduled alarms).
+ */
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
-            Log.d("Knappen", "Boot received.")
-            val handler = MainButtonHandler(context)
-            handler.onBoot(intent)
+        when (intent.action) {
+            Intent.ACTION_BOOT_COMPLETED,
+            Intent.ACTION_MY_PACKAGE_REPLACED -> {
+                Log.d("Knappen", "Restoring timer after ${intent.action}")
+                MainButtonHandler(context).onBootOrUpdate()
+            }
         }
     }
 }

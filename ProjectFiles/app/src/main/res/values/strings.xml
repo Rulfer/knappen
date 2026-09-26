@@ -1,7 +1,50 @@
 <resources>
-    <string name="app_name">Knappen</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="configure">Configure</string>
-    <string name="add_widget">Add widget</string>
-    <string name="app_widget_description">This is an app widget description</string>
+    <string name="app_name" translatable="false">Knappen</string>
+
+    <!-- Leftovers from the widget configure template (see MainWidgetConfigureActivity) -->
+    <string name="appwidget_text" translatable="false">EXAMPLE</string>
+    <string name="configure" translatable="false">Configure</string>
+    <string name="add_widget" translatable="false">Add widget</string>
+
+    <string name="app_widget_description">A button that locks for a set time after each tap</string>
+
+    <!-- Widget -->
+    <string name="widget_idle_text" translatable="false">Knappen</string>
+    <string name="widget_countdown_format">Ready in %s</string>
+    <string name="widget_settings_description">Open the widget settings</string>
+
+    <!-- Notification -->
+    <string name="notification_title" translatable="false">Knappen</string>
+    <string name="notification_channel_name">Knappen notifications</string>
+    <string name="notification_ready">Knappen is clickable again!</string>
+
+    <!-- Permission screen -->
+    <string name="permission_explanation">Knappen needs permission to send notifications. They are only sent when the button can be tapped again.</string>
+    <string name="permission_grant">Allow</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_lock_duration">Knappen locks for %1$dh %2$dm</string>
+    <string name="settings_change">Change</string>
+    <string name="settings_test_duration">Use 1 minute (for testing)</string>
+    <string name="settings_reset">Reset running timer</string>
+    <string name="settings_picker_title">Choose duration</string>
+    <string name="picker_hours">hours</string>
+    <string name="picker_minutes">minutes</string>
+    <string name="action_ok" translatable="false">OK</string>
+    <string name="action_cancel">Cancel</string>
+
+    <!-- Main screen -->
+    <string name="main_intro">A button that locks for a set time after you tap it, and tells you when it is ready again.</string>
+    <string name="main_setup_title">Set up</string>
+    <string name="main_setup_steps">1. Long-press an empty spot on your home screen.\n2. Open Widgets and pick Knappen.\n3. Drag it onto your home screen.\n4. Tap the button to start the timer.</string>
+    <string name="main_add_widget">Add widget to home screen</string>
+    <string name="main_status_title">Status</string>
+    <string name="main_notifications_on">Notifications: allowed</string>
+    <string name="main_notifications_off">Notifications are off. Knappen needs them to tell you when the button is ready.</string>
+    <string name="main_allow_notifications">Allow notifications</string>
+    <string name="main_exact_off">Exact timing is off. The notification may arrive a few minutes late.</string>
+    <string name="main_allow_exact">Allow exact timing</string>
+    <string name="main_open_settings">Widget settings</string>
+    <string name="main_test_hint">Testing? Open the settings and choose the 1 minute option to see a full cycle quickly.</string>
 </resources>

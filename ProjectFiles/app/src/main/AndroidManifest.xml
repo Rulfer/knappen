@@ -2,7 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.bardsplayground.knappen">
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <!-- Exact alarms keep the widget countdown from running past 0:00 (inexact alarms can be hours late).
+         API 31-32: SCHEDULE_EXACT_ALARM (granted by default). API 33+: USE_EXACT_ALARM (auto-granted;
+         Play only allows it for alarm/timer apps - declare Knappen as a timer in the Play Console form). -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32"/>
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <application
         android:allowBackup="true"
@@ -13,14 +17,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Knappen">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Knappen.Main">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <receiver
             android:name=".MainWidget"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.bardsplayground.knappen.BUTTON_CLICKED" />
-                <action android:name="com.bardsplayground.knappen.OPEN_SETTINGS" />
-                <action android:name="com.bardsplayground.knappen.REQUEST_PERMISSION" />
             </intent-filter>
 
             <meta-data
@@ -30,15 +40,16 @@
         <receiver
             android:name=".Timer"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
         <receiver android:name=".BootReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
         <activity
             android:name=".PermissionActivity"
-            android:exported="true"
+            android:exported="false"
             android:theme="@style/Theme.Knappen.Dialog">
         </activity>
         <activity
