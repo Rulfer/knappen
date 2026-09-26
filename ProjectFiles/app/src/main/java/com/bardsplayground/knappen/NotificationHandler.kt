@@ -55,7 +55,7 @@ class NotificationHandler(private val context: Context) {
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle(context.getString(R.string.notification_title))
+            .setContentTitle(AppLanguage.localized(context).getString(R.string.notification_title))
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(openApp)
@@ -64,11 +64,17 @@ class NotificationHandler(private val context: Context) {
         notificationManager.notify(NOTIFICATION_ID, builder.build())
     }
 
+    /** Re-creates the channel so its name (shown in system settings) follows a language change. */
+    fun refreshChannel() {
+        createNotificationChannel(context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+    }
+
     private fun createNotificationChannel(notificationManager: NotificationManager) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Creating an existing channel again only updates its name; the user's settings are kept.
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                context.getString(R.string.notification_channel_name),
+                AppLanguage.localized(context).getString(R.string.notification_channel_name),
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             notificationManager.createNotificationChannel(channel)

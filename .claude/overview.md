@@ -19,13 +19,14 @@ Kotlin, AGP 8.13.2, Kotlin 2.0.21, compileSdk/targetSdk 36, minSdk 24, AppWidget
 | Launcher screen with setup help, pin-widget button, permission/exact-alarm status | Done (new) |
 | Persistent notification with countdown (9) / "timer started" notification (10) | NOT done |
 | Read/write all options from prefs (14) | Partly (timer state, duration, permission-prompted flag) |
-| Localization en/nb (15) | Done for all strings (English default, `values-nb`) |
+| Localization en/nb (15) | Done for all strings (English default, `values-nb`); Norwegian when the phone language is Norwegian or the phone is in Norway (`AppLanguage.kt`) |
 | Unique timer per widget instance (16) | Dropped: one shared timer by design (see architecture.md) |
 | Real disabled-state visual | NOT done |
 
 ## Source file map (`ProjectFiles/app/src/main/java/com/bardsplayground/knappen/`)
 | File | Role |
 |---|---|
+| `AppLanguage.kt` | Chooses nb/en (Norwegian language OR in Norway) and wraps contexts; used by all activities, the widget and notifications. |
 | `MainActivity.kt` | Launcher screen: setup steps, pin-widget button, notification / exact-alarm status with grant buttons, link to settings. |
 | `MainWidget.kt` | `AppWidgetProvider` + top-level `updateAppWidget()` (idle label vs live Chronometer, PendingIntents). |
 | `MainButtonHandler.kt` | Core logic: click handling, start/cancel alarm (fixed request code + legacy cleanup), boot/update restore, refresh all widgets. |

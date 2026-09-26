@@ -1,6 +1,7 @@
 package com.bardsplayground.knappen
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -13,6 +14,10 @@ import androidx.appcompat.app.AppCompatActivity
  * Explains why Knappen wants to send notifications and requests POST_NOTIFICATIONS (API 33+).
  */
 class PermissionActivity : AppCompatActivity() {
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLanguage.localized(newBase))
+    }
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->

@@ -70,6 +70,9 @@ internal fun updateAppWidget(
 ) {
     val views = RemoteViews(context.packageName, R.layout.main_widget)
     val prefs = PrefsManager(context)
+    // The launcher resolves @string in the widget layout with the phone locale, so set language-dependent text here.
+    val text = AppLanguage.localized(context)
+    views.setContentDescription(R.id.btn_settings, text.getString(R.string.widget_settings_description))
 
     if (prefs.isTimerActive()) {
         // Locked: show a live countdown. The Chronometer ticks by itself, no wake-ups or refresh loop needed.
@@ -80,7 +83,7 @@ internal fun updateAppWidget(
         views.setChronometer(
             R.id.main_countdown,
             SystemClock.elapsedRealtime() + remainingMs,
-            context.getString(R.string.widget_countdown_format),
+            text.getString(R.string.widget_countdown_format),
             true
         )
     } else {

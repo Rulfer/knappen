@@ -48,7 +48,9 @@ class MainButtonHandler(private val context: Context) {
      * Called by the alarm. Notifies the user and makes the button clickable again.
      */
     fun onTimerTriggered() {
-        notificationHandler.createNotification(context.getString(R.string.notification_ready))
+        notificationHandler.createNotification(
+            AppLanguage.localized(context).getString(R.string.notification_ready)
+        )
         prefs.setTimerActive(active = false)
         refreshAllWidgets()
     }

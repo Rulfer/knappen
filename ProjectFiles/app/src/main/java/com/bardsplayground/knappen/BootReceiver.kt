@@ -16,6 +16,11 @@ class BootReceiver : BroadcastReceiver() {
                 Log.d("Knappen", "Restoring timer after ${intent.action}")
                 MainButtonHandler(context).onBootOrUpdate()
             }
+            // The phone language changed: redraw widgets and rename the channel (see AppLanguage).
+            Intent.ACTION_LOCALE_CHANGED -> {
+                MainButtonHandler(context).refreshAllWidgets()
+                NotificationHandler(context).refreshChannel()
+            }
         }
     }
 }

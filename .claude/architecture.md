@@ -44,4 +44,12 @@ Gear -> `PendingIntent.getActivity` -> `SettingsActivity`. Also reachable from `
 Versions up to 1.4 used request code `widgetId*10+1` (and -9 after a reboot). `cancelLegacyAlarms()` cancels those (`FLAG_NO_CREATE`) whenever a timer starts or is reset, so an old alarm cannot fire twice after an update.
 
 ## Strings
-All user-visible text is in `res/values/strings.xml` (English default) and `res/values-nb/strings.xml` (Norwegian). Add new text to both.
+All user-visible text is in `res/values/strings.xml` (English default) and `res/values-nb/strings.xml` (Norwegian). Add new text to both (or mark it `translatable="false"`, otherwise lint fails).
+
+Language rule (`AppLanguage.kt`, owner's decision 2026-09-26): Norwegian if the phone's first language is nb/nn/no OR the phone is in Norway (SIM or network country `no`, or phone region Norway, e.g. `en-NO`); English otherwise. Android does not do this by itself, so:
+- Every activity overrides `attachBaseContext` with `AppLanguage.localized(newBase)` - new activities must do the same.
+- Receiver-side text (widget countdown format + gear content description in `updateAppWidget`, notification title/text/channel name) is fetched via `AppLanguage.localized(context).getString(...)`. Plain `context.getString` there would follow the phone language instead.
+- `@string` inside `main_widget.xml` is resolved by the launcher with the phone locale; only language-neutral text ("Knappen") may stay there, anything else is set in code.
+- `BootReceiver` handles `LOCALE_CHANGED`: refreshes widgets and renames the notification channel.
+- Not covered: the widget picker description (`app_widget_description`) and app name are resolved by the system, so they follow the phone language. A SIM/network change has no broadcast; text updates on the next widget refresh or app start.
+- Gotcha: TelephonyManager must come from `applicationContext` - from the unattached activity in `attachBaseContext` it crashes (NPE).

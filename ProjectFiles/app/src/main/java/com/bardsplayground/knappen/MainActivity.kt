@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.AlarmManager
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -23,6 +24,10 @@ import androidx.core.view.WindowInsetsCompat
  * (notification permission and, on Android 12+, exact alarms).
  */
 class MainActivity : AppCompatActivity() {
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLanguage.localized(newBase))
+    }
 
     private val requestNotificationPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->

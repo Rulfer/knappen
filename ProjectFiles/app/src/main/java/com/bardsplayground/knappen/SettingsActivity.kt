@@ -2,6 +2,7 @@ package com.bardsplayground.knappen
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Button
@@ -23,6 +24,10 @@ class SettingsActivity : Activity() {
     private var pickerDialog: AlertDialog? = null
     private var hoursPicker: NumberPicker? = null
     private var minutesPicker: NumberPicker? = null
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLanguage.localized(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
