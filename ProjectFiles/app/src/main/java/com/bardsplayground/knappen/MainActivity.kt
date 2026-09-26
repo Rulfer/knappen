@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
         val exactButton = findViewById<Button>(R.id.btn_exact_alarm)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-            // Always allowed on API 33+ (USE_EXACT_ALARM); only API 31-32 users can switch it off.
+            // SCHEDULE_EXACT_ALARM is user-controlled (denied by default on Android 14+ for new installs).
             val exactOk = alarmManager.canScheduleExactAlarms()
             exactRow.visibility = if (exactOk) View.GONE else View.VISIBLE
             exactRow.setText(R.string.main_exact_off)

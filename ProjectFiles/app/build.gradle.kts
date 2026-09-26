@@ -15,8 +15,8 @@ android {
         applicationId = "com.bardsplayground.knappen"
         minSdk = 24
         targetSdk = 36
-        versionCode = 6
-        versionName = "1.5"
+        versionCode = 7
+        versionName = "1.5.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -35,6 +35,12 @@ android {
             )
 //            applicationIdSuffix = rootProject.extra["defaultApplicationId"] as String
             isDebuggable = false
+
+            // Bundle native debug symbols (from androidx.graphics.path, pulled in by Compose)
+            // so Play Console doesn't warn about missing symbol files.
+            ndk {
+                debugSymbolLevel = "SYMBOL_TABLE"
+            }
 
         }
     }

@@ -8,7 +8,7 @@
 - `Timer` (receiver, NOT exported) - alarm target.
 - `BootReceiver` (receiver, exported) - `BOOT_COMPLETED` and `MY_PACKAGE_REPLACED` (restore timer), `LOCALE_CHANGED`, `TIME_SET`, `TIMEZONE_CHANGED` (redraw).
 - `PermissionActivity` (not exported, dialog theme), `SettingsActivity` (not exported, dialog theme, noHistory).
-- Permissions: `POST_NOTIFICATIONS`, `USE_EXACT_ALARM` (API 33+, auto-granted), `SCHEDULE_EXACT_ALARM` (maxSdk 32), `RECEIVE_BOOT_COMPLETED`. Exact alarms are needed because the widget Chronometer only returns to idle when the alarm fires; an inexact alarm leaves it counting negative.
+- Permissions: `POST_NOTIFICATIONS`, `SCHEDULE_EXACT_ALARM` (all API levels; user-controlled, denied by default on Android 14+ for new installs). `USE_EXACT_ALARM` was removed in 1.5.1 because Play only allows it for alarm-clock/calendar apps, `RECEIVE_BOOT_COMPLETED`. Exact alarms are needed because the widget Chronometer only returns to idle when the alarm fires; an inexact alarm leaves it counting negative.
 
 ## Design decision: ONE shared timer
 State is global (not per widget). All widgets show the same countdown and there is exactly one alarm (`MainButtonHandler.ALARM_REQUEST_CODE = 42`). README item 16 (unique timer per widget) is intentionally not implemented; changing this means per-widget prefs keys + widget id as extra on the `Timer` intent.
@@ -25,7 +25,7 @@ State is global (not per widget). All widgets show the same countdown and there 
 1. `updateAppWidget()` attaches a broadcast PendingIntent (explicit -> `MainWidget`, action `BUTTON_CLICKED`, requestCode `widgetId*10+1`) to both `main_button` and `main_countdown`.
 2. `MainWidget.onReceive` -> `MainButtonHandler.onMainButtonClicked()`.
 3. If `isTimerActive()`: only refresh widgets. Otherwise: `NotificationHandler.promptForPermissionOnce()` (opens `PermissionActivity` once if notifications are not allowed; behaviour of starting an activity from the receiver on a widget tap should be verified on Android 10+), then `startTimer`.
-4. `startTimer`: trigger = now + duration; cancels legacy alarms; exact alarm (`setExactAndAllowWhileIdle`) unless API 31+ and `canScheduleExactAlarms()` is false, then `setAndAllowWhileIdle` (only reachable on API 31-32 after the user revoked it; can be very late). Stores trigger + active, refreshes widgets.
+4. `startTimer`: trigger = now + duration; cancels legacy alarms; exact alarm (`setExactAndAllowWhileIdle`) unless API 31+ and `canScheduleExactAlarms()` is false, then `setAndAllowWhileIdle` (the default on Android 14+ until the user grants exact alarms; can be very late). Stores trigger + active, refreshes widgets.
 5. Widget rendering: idle -> `main_button` TextView ("Knappen"); locked -> `main_countdown` Chronometer in count-down mode with base = `elapsedRealtime + remaining` and format "Ready in %s". The Chronometer ticks by itself, no periodic refresh needed.
 
 ## Daily limit (added 2026-09-26, owner's decision)
@@ -47,7 +47,7 @@ Gear -> `PendingIntent.getActivity` -> `SettingsActivity`. Also reachable from `
 
 ## Flow: notification permission
 - `PermissionActivity` (explanation + system dialog, denial -> app notification settings) is shown once, from the first widget tap.
-- `MainActivity` shows the current permission state with an "Allow notifications" button at any time; only when exact alarms are off (API 31-32 only) it shows an "Exact timing is off" row with a button to `ACTION_REQUEST_SCHEDULE_EXACT_ALARM`.
+- `MainActivity` shows the current permission state with an "Allow notifications" button at any time; only when exact alarms are off (API 31+, typical on Android 14+ fresh installs) it shows an "Exact timing is off" row with a button to `ACTION_REQUEST_SCHEDULE_EXACT_ALARM`.
 
 ## Legacy alarms
 Versions up to 1.4 used request code `widgetId*10+1` (and -9 after a reboot). `cancelLegacyAlarms()` cancels those (`FLAG_NO_CREATE`) whenever a timer starts or is reset, so an old alarm cannot fire twice after an update.

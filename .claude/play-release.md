@@ -8,12 +8,18 @@ Decisions (2026-09-26): personal developer account (no registered company, so no
 - Opt-outs break the count: recruit 15-20 people for a target of 12.
 
 ## Preparing the test build
-- Bump `versionCode` (currently 6, versionName 1.5) and `versionName` in `app/build.gradle.kts` for every upload.
+- Bump `versionCode` (currently 7, versionName 1.5.1; code 6 was uploaded and is used up) and `versionName` in `app/build.gradle.kts` for every upload.
 - Build a signed `.aab` (owner keeps the key; never commit keystores). Use Play App Signing.
 - Tester-friendly features already in the code: launcher screen with setup steps and pin-widget button, live countdown, 1-minute test duration in Settings, notification permission status.
-- Play Console: privacy policy URL (needed; the app collects nothing, only local prefs), data safety form, app content declarations (the exact-alarm declaration IS required: the app uses `USE_EXACT_ALARM`, which Play only allows for alarm/timer apps - describe Knappen as a timer whose core function is the "ready again" alert at an exact time), store listing graphics from `Logos/`.
+- Play Console: privacy policy URL (needed; the app collects nothing, only local prefs), data safety form, app content declarations (no exact-alarm declaration needed since 1.5.1: the app only uses `SCHEDULE_EXACT_ALARM`. Do NOT re-add `USE_EXACT_ALARM` - the Play form only accepts alarm clock / calendar apps, and Knappen is neither), store listing graphics from `Logos/`.
 
 ## Open work
 - Tester recruitment post + tester guide + feedback form + 14-day plan (not written yet).
 - Website: Knappen page and privacy policy on bardsplayground.no.
 - Alternative if 12 testers cannot be reached: GitHub Releases APK, IzzyOnDroid / F-Droid (no tester requirement).
+
+## Native debug symbols warning
+Play Console warned "App Bundle contains native code, no debug symbols uploaded". The only native lib is
+`libandroidx.graphics.path.so` (from the unused Compose `ui-graphics` dependency). Fixed via
+`ndk { debugSymbolLevel = "SYMBOL_TABLE" }` in the release build type (versionCode 6 was uploaded before
+the fix and still shows the warning; harmless). Removing the Compose deps would also remove the native code.

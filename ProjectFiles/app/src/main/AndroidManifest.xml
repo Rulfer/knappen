@@ -3,10 +3,10 @@
     package="com.bardsplayground.knappen">
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <!-- Exact alarms keep the widget countdown from running past 0:00 (inexact alarms can be hours late).
-         API 31-32: SCHEDULE_EXACT_ALARM (granted by default). API 33+: USE_EXACT_ALARM (auto-granted;
-         Play only allows it for alarm/timer apps - declare Knappen as a timer in the Play Console form). -->
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32"/>
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
+         Only SCHEDULE_EXACT_ALARM: Play restricts USE_EXACT_ALARM to alarm-clock/calendar apps, which
+         Knappen is not. On Android 14+ it is denied by default for new installs; MainActivity shows a
+         button to grant it, and MainButtonHandler falls back to inexact alarms without it. -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <application
         android:allowBackup="true"
